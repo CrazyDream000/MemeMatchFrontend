@@ -2,32 +2,32 @@ import React,  { useState,useEffect } from 'react'
 import axios from 'axios'
 import {Link} from 'react-router-dom'
 import {BsEye} from 'react-icons/bs'
+import {BounceLoader} from 'react-spinners'
 function CoinLists() {
     const Background1 = require('../assets/img/tokens/back1.png');
-    const Avatar1 = require('../assets/img/tokens/avatar2.png');
-    const Background2 = require('../assets/img/tokens/back2.png');
-    const Avatar2 = require('../assets/img/tokens/avatar1.png');
     const downPic = require('../assets/img/tokens/down.png');
     const heart = require('../assets/img/tokens/Vector.png');
     
-    
+    const [isLoading, setIsLoading] = useState(false);
     const [coinLists, setCoinLists] = useState(null);
     useEffect(() => {
         // This code will be executed only once, similar to componentDidMount
         //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)
+
         fetchData();
+
         return () => {
           // This code will be executed just before unmounting the component, similar to componentWillUnmount
         };
     }, []); 
        
     const fetchData = async () => {
-        console.log("loaded");
+        setIsLoading(true);
         const result = await axios.get(
             `https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`,
         );
-        console.log(result.data);
         setCoinLists(result.data);
+        setIsLoading(false);
     };
     let coinlistsTable ;
     if(coinLists != undefined)
@@ -62,25 +62,30 @@ function CoinLists() {
         ));
     }
     return (
-      <div className="h-[100vh] w-[100vw] overflow-hidden">
-         <div className='py-6 lg:py-[90px] bg-violet-700 flex flex-col justify-center items-center gap-4'>
-            <div className='text-2xl lg:text-5xl text-white font-bold flex gap-2 lg:gap-4 items-end'><div>Meme</div><img src={heart} className='w-6 h-6 lg:w-full lg:h-full'></img><div>Match</div></div>
-            <div className='hidden lg:block text-xl text-white font-bold'>Somthing about meme match here </div>
-         </div>
-         <div className='w-full flex justify-center p-10'>
-            <div className='bg-gray-100 border-2 border-gray-200/80 rounded-full flex'>
-                <div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer'>Price <img src={downPic} className='w-[10px] h-[10px]'></img></div>
-                <div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer'>Age</div>
-                <div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer'>Rating</div>
-            </div>
-         </div>         
-         <div className='w-[103vw] lg:w-[101vw] h-3/4 lg:h-1/2 overflow-y-auto'>
-            <div className=' flex justify-center pl-2 pr-4 md:pl-2 md:pr-8 lg:pr-4'>
-                <div className='grid grid-cols-1 w-[425px] md:grid-cols-2 md:w-[768px] lg:grid-cols-3 lg:w-[1024px] xl:grid-cols-4 xl:w-[1360px] gap-2'>
-                    {coinlistsTable}
+      <div className="h-[100vh] w-[100vw]">
+        {isLoading?(<div className='w-full h-[100vh] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
+            <div className='h-[100vh] w-[100vw] overflow-hidden'>
+                <div className='py-6 lg:py-[90px] bg-violet-700 flex flex-col justify-center items-center gap-4'>
+                    <div className='text-2xl lg:text-5xl text-white font-bold flex gap-2 lg:gap-4 items-end'><div>Meme</div><img src={heart} className='w-6 h-6 lg:w-full lg:h-full'></img><div>Match</div></div>
+                    <div className='hidden lg:block text-xl text-white font-bold'>Somthing about meme match here </div>
+                </div>
+                <div className='w-full flex justify-center p-10'>
+                    <div className='bg-gray-100 border-2 border-gray-200/80 rounded-full flex'>
+                        <div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer'>Price <img src={downPic} className='w-[10px] h-[10px]'></img></div>
+                        <div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer'>Age</div>
+                        <div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer'>Rating</div>
+                    </div>
+                </div>         
+                <div className='w-[103vw] lg:w-[101vw] h-3/4 lg:h-1/2 overflow-y-auto'>
+                    <div className=' flex justify-center pl-2 pr-4 md:pl-2 md:pr-8 lg:pr-4'>
+                        <div className='grid grid-cols-1 w-[425px] md:grid-cols-2 md:w-[768px] lg:grid-cols-3 lg:w-[1024px] xl:grid-cols-4 xl:w-[1360px] gap-2'>
+                            {coinlistsTable}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        )}
+         
       </div>
     );
   }

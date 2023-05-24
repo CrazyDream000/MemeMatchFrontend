@@ -6,7 +6,7 @@ import ReactApexCharts from 'apexcharts'
 import LineChart from '../component/LineChart';
 import { Circle2 } from 'react-preloaders';
 import {BsStarFill, BsStarHalf, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
-
+import {BounceLoader} from 'react-spinners'
 function CoinOverview(props) {
     const { id } = useParams();
     const Background1 = require('../assets/img/tokens/back1.png');
@@ -17,16 +17,18 @@ function CoinOverview(props) {
     const [searchState, setSearchState] = useState(1);
     const [currentId, setCurrentId] = useState(-1);
     const [showModalFlag, setShowModalFlag] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const downPic = require('../assets/img/tokens/down.png');
     useEffect(() => {
         // This code will be executed only once, similar to componentDidMount
         //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)
         const fetchData = async () => {
+          setIsLoading(true);
           const coinListresult = await axios.get(
               'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk'
           );
           setCoinLists(coinListresult.data);
-        
+          setIsLoading(false);
         };
             
         getCoinData(id,1);
@@ -40,32 +42,29 @@ function CoinOverview(props) {
       alert("1");
     }
     async function getCoinData (coinID, period) {
+      setIsLoading(true);
       const result = await axios.get(
           `https://pro-api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=${period}&interval=hourly&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
       );
       setHistoricalData(result.data.prices);
       setCurrentId(coinID);
       setSearchState(period);
+      setIsLoading(false);
     };
     let captionContent=[];
     let chartContent = [];
     let modalContent = [];
-    if (!historicalData) {
-        return <div className='w-full h-full flex justify-center items-center'><svg class="text-black animate-spin h-20 w-20" viewBox="0 0 24 24"></svg></div>;
-    }
+
     if(coinLists)
     {
       for(var i = 0; i < coinLists.length; i ++)
       {
         if(coinLists[i].id == currentId)
         {
-          console.log("current Coin Data-----");
-          console.log(coinLists[i]);
           const prevId = i>0?coinLists[i-1].id:coinLists[coinLists.length-1].id;
           const nextId = i<(coinLists.length-1)?coinLists[i+1].id:coinLists[0].id;
           let starContent=[];
           let val = coinLists[i].market_cap / coinLists[3].market_cap * 5;
-          console.log("val:",val);
           for(var j = 0 ; j < 5; j ++){
             if(j<val)
               starContent = [...starContent, (
@@ -84,7 +83,7 @@ function CoinOverview(props) {
               </button>
               <div className='flex flex-col relative justify-center items-center space-y-10'>
                   <div className='flex flex-col items-center'>
-                    <div className='bg-white rounded-full p-2'><img src={coinLists[i].image} className='w-20 h-20'></img></div>
+                    <div className='bg-white rounded-full p-5'><img src={coinLists[i].image} className='w-20 h-20'></img></div>
                       <div className='text-3xl lg:text-5xl font-bold text-white'>{coinLists[i].symbol.toUpperCase()}</div>
                   </div>
                   <button className='w-10 h-10 text-black bg-white rounded-full flex justify-center items-center transition delay-[40] hover:bg-red-500 hover:text-white'><BsHeart/></button>
@@ -97,7 +96,7 @@ function CoinOverview(props) {
 
           chartContent = (
           <div className='w-full flex flex-col lg:grid lg:grid-cols-4'>
-              <div className='col-span-3 p-10'>
+              <div className='col-span-3 px-10 py-4'>
                 <div className='text-2xl lg:text-5xl text-center font-bold lg:text-left'>{"$" + coinLists[i].market_cap.toLocaleString()}</div>
                 <div className='flex py-4 md:space-x-10 font-bold'>
                   {searchState == 1?
@@ -113,11 +112,11 @@ function CoinOverview(props) {
                       (<button className='px-4 py-2 text-gray-500 transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 14)}}>14 days</button>)
                   }
                   {coinLists[i].market_cap_change_24h<0?
-                    (<div className='mt-4 px-3 py-2 w-20 bg-[#D8494A] text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
+                    (<div className='ml-2 px-3 py-2 w-20 bg-[#D8494A] text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
                         <img src={downPic} className='w-2 h-2 rotate'></img>
                         <div className='font-bold text-white text-sm'>{coinLists[i].market_cap_change_percentage_24h.toFixed(2)+"%"}</div>
                     </div>):
-                    (<div className='mt-4 px-3 py-2 w-20  bg-teal-500 text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
+                    (<div className='ml-2 px-3 py-2 w-20  bg-teal-500 text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
                         <img src={downPic} className='w-2 h-2 rotate-180'></img>
                         <div className='font-bold text-white text-sm'>{coinLists[i].market_cap_change_percentage_24h.toFixed(2)+"%"}</div>
                     </div>)}
@@ -168,15 +167,19 @@ function CoinOverview(props) {
         }
       }
     }
-    console.log(showModalFlag);
     return (
+    
       <div className="w-[100vw] relative">
-         <div className='hidden py-6 bg-violet-700 lg:flex lg:flex-col justify-center items-center gap-4'>
+        {isLoading?(<div className='w-full h-[100vh] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
+          <div>
+          <div className='hidden py-6 bg-violet-700 lg:flex lg:flex-col justify-center items-center gap-4'>
             <div className='text-2xl text-white font-bold flex gap-2 items-end'><div>Meme</div><img src={heart} className='w-6 h-6'></img><div>Match</div></div>
-         </div>
-         {captionContent}
-         {chartContent}
-         {showModalFlag==true?modalContent:""}
+          </div>
+          {captionContent}
+          {chartContent}
+          {showModalFlag==true?modalContent:""}
+          </div>
+        )}         
       </div>
     );
   }
