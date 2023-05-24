@@ -11,7 +11,7 @@ module.exports = {
       },
       backgroundColor:{
         'maincolor':'rgba(23, 34, 86, 1)',
-      }
+      },
     },
   },
   plugins: [],

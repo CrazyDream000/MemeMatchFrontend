@@ -16,7 +16,7 @@ function CoinOverview(props) {
     const [historicalData, setHistoricalData] = useState(null);
     const [searchState, setSearchState] = useState(1);
     const [currentId, setCurrentId] = useState(-1);
-
+    const [showModalFlag, setShowModalFlag] = useState(false);
     const downPic = require('../assets/img/tokens/down.png');
     useEffect(() => {
         // This code will be executed only once, similar to componentDidMount
@@ -36,7 +36,9 @@ function CoinOverview(props) {
           
         };
     }, []); 
-
+    const onButtonClick = () => {
+      alert("1");
+    }
     async function getCoinData (coinID, period) {
       const result = await axios.get(
           `https://pro-api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=${period}&interval=hourly&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
@@ -49,7 +51,7 @@ function CoinOverview(props) {
     let chartContent = [];
     let modalContent = [];
     if (!historicalData) {
-        return <div>loading</div>;
+        return <div className='w-full h-full flex justify-center items-center'><svg class="text-black animate-spin h-20 w-20" viewBox="0 0 24 24"></svg></div>;
     }
     if(coinLists)
     {
@@ -126,34 +128,55 @@ function CoinOverview(props) {
                 </div>
               </div>
               <div className='col-span-1 p-10'>
-                <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800'>Buy Mong</button>
+                <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{setShowModalFlag(true)}}>Buy Mong</button>
               </div>
           </div>);
 
           modalContent = (
-            <div className='absolute w-[375px] bg-violet-900 p-10 top-0 z-30 rounded-none lg:rounded-2xl'>
-              <div className='flex justify-between font-bold text-2xl text-white'><span>BUY</span><span>SELL</span></div>
-              <div className='mt-4 bg-gray-500/50 w-full rounded-xl flex flex-col items-center space-y-5 p-4'>
-                  <div className='bg-white rounded-full p-2 -mt-10'><img src={coinLists[i].image} className='w-14 h-14'></img></div>
-                  <div className='text-white font-bold text-xl'>INVEST</div>
-                  <div className='text-white font-bold text-4xl'>100$</div>
-                  <div className='text-white font-bold text-xl'>RECEIVE</div>
-                  <div className='text-white font-bold text-4xl'>12,323,442</div>
-                  <div className='text-gray-400 font-bold text-md'>2% FIXED FEE INCLUDING SLIPPAGE</div>
+            <div className='fixed top-0 w-full h-full z-30 flex justify-center transition delay-[40]'>
+              <div className='w-full h-full bg-black/30 ' onClick={()=>{setShowModalFlag(false)}}></div>
+              <div id="buyModal" className='animate-bounce absolute bottom-0 transition delay-[40] w-full bg-violet-900 px-10 py-4 rounded-none lg:rounded-2xl flex flex-col space-y-2 z-40'>
+                <div className='flex justify-between font-bold text-2xl text-white'><span>BUY</span><span>SELL</span></div>
+                <div className='bg-gray-500/50 w-full rounded-xl flex flex-col items-center space-y-4 p-4'>
+                    <div className='bg-white rounded-full p-2 -mt-10'><img src={coinLists[i].image} className='w-14 h-14'></img></div>
+                    <div className='text-white font-bold text-lg lg:text-xl'>INVEST</div>
+                    <div className='text-white font-bold text-xl lg:text-4xl'>100$</div>
+                    <div className='text-white font-bold text-lg lg:text-xl'>RECEIVE</div>
+                    <div className='text-white font-bold text-xl lg:text-4xl'>12,323,442</div>
+                    <div className='text-gray-400 font-bold text-sm lg:text-md'>2% FIXED FEE INCLUDING SLIPPAGE</div>
+                </div>
+                <div className='grid grid-cols-2 gap-2'>
+                  <div className='col-span-1 bg-gray-500/50 font-bold text-white text-xl lg:text-4xl py-5 rounded-xl transition delay-[40] hover:bg-purple-500 cursor-pointer'>
+                      50$
+                  </div>
+                  <div className='col-span-1 bg-gray-500/50 font-bold text-white text-xl lg:text-4xl py-5 rounded-xl transition delay-[40] hover:bg-purple-500 cursor-pointer'>
+                      100$
+                  </div>
+                  <div className='col-span-1 bg-gray-500/50 font-bold text-white text-xl lg:text-4xl py-5 rounded-xl transition delay-[40] hover:bg-purple-500 cursor-pointer'>
+                      250$
+                  </div>
+                  <div className='col-span-1 bg-gray-500/50 font-bold text-white text-xl lg:text-4xl py-5 rounded-xl transition delay-[40] hover:bg-purple-500 cursor-pointer'>
+                      1000$
+                  </div>
+                </div>
+                <div className='w-full'>
+                  <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-500' onCLick={onButtonClick}>Buy Mong</button>
+                </div>
               </div>
             </div>
           );
         }
       }
     }
+    console.log(showModalFlag);
     return (
-      <div className="h-[100vh] relative">
+      <div className="w-[100vw] relative">
          <div className='hidden py-6 bg-violet-700 lg:flex lg:flex-col justify-center items-center gap-4'>
             <div className='text-2xl text-white font-bold flex gap-2 items-end'><div>Meme</div><img src={heart} className='w-6 h-6'></img><div>Match</div></div>
          </div>
          {captionContent}
          {chartContent}
-         {modalContent}
+         {showModalFlag==true?modalContent:""}
       </div>
     );
   }
