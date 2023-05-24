@@ -42,14 +42,12 @@ function CoinOverview(props) {
       alert("1");
     }
     async function getCoinData (coinID, period) {
-      setIsLoading(true);
       const result = await axios.get(
           `https://pro-api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=${period}&interval=hourly&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
       );
       setHistoricalData(result.data.prices);
       setCurrentId(coinID);
       setSearchState(period);
-      setIsLoading(false);
     };
     let captionContent=[];
     let chartContent = [];
