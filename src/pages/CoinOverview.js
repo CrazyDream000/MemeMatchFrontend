@@ -7,10 +7,15 @@ import LineChart from '../component/LineChart';
 import { Circle2 } from 'react-preloaders';
 import {BsStarFill, BsStarHalf, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
 import {BounceLoader} from 'react-spinners'
+import { Web3Button } from '@web3modal/react'
+
+import { useAccount, useConnect, useDisconnect } from 'wagmi'
+
 function CoinOverview(props) {
     const { id } = useParams();
     const Background1 = require('../assets/img/tokens/back1.png');
     const heart = require('../assets/img/tokens/Vector.png');
+    const downPic = require('../assets/img/tokens/down.png');
 
     const [coinLists, setCoinLists] = useState(null);
     const [historicalData, setHistoricalData] = useState(null);
@@ -18,7 +23,12 @@ function CoinOverview(props) {
     const [currentId, setCurrentId] = useState(-1);
     const [showModalFlag, setShowModalFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const downPic = require('../assets/img/tokens/down.png');
+    const [showAlertFlag, setShowAlertFlag] = useState(false);
+    const [showAlertText, setShowAlertText] = useState("");
+
+    const { address, isConnected } = useAccount()
+    
+
     useEffect(() => {
         // This code will be executed only once, similar to componentDidMount
         //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)
@@ -77,7 +87,7 @@ function CoinOverview(props) {
             <div className='w-full h-[300px] overflow-hidden relative flex justify-between items-center'>
               <img className='absolute w-full -top-[100px] md:-top-[200px] lg:-top-[400px] xl:-top-[600px] z-0' src={Background1}></img>
               <button className='ml-5 w-10 h-10 bg-white rounded-full transition delay-[40] hover:bg-gray-400 hover:text-white z-10 relative flex justify-center items-center' onClick={()=>{getCoinData(prevId,1)}}>
-                  <BsArrowLeftShort/>
+                  <BsArrowLeftShort className='w-8 h-8'/>
               </button>
               <div className='flex flex-col relative justify-center items-center space-y-10'>
                   <div className='flex flex-col items-center'>
@@ -87,11 +97,11 @@ function CoinOverview(props) {
                   <button className='w-10 h-10 text-black bg-white rounded-full flex justify-center items-center transition delay-[40] hover:bg-red-500 hover:text-white'><BsHeart/></button>
               </div>
               <button className='mr-5 w-10 h-10 bg-white rounded-full transition delay-[40] hover:bg-gray-400 hover:text-white z-10 relative flex justify-center items-center' onClick={()=>{getCoinData(nextId,1)}}>
-                <BsArrowRightShort className='w-4 h-4'/>
+                <BsArrowRightShort className='w-8 h-8'/>
               </button>
             </div>
           );
-
+          let market_cap_change_rate = ((historicalData[historicalData.length-1][1] - historicalData[0][1])/historicalData[0][1] * 100);
           chartContent = (
           <div className='w-full flex flex-col lg:grid lg:grid-cols-4'>
               <div className='col-span-3 px-10 py-4'>
@@ -109,14 +119,14 @@ function CoinOverview(props) {
                       (<button className='px-4 py-2 bg-purple-500 text-white rounded-lg' onClick={()=>{getCoinData(currentId, 14)}}>14 days</button>):
                       (<button className='px-4 py-2 text-gray-500 transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 14)}}>14 days</button>)
                   }
-                  {coinLists[i].market_cap_change_24h<0?
+                  {market_cap_change_rate<0?
                     (<div className='ml-2 px-3 py-2 w-20 bg-[#D8494A] text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
                         <img src={downPic} className='w-2 h-2 rotate'></img>
-                        <div className='font-bold text-white text-sm'>{coinLists[i].market_cap_change_percentage_24h.toFixed(2)+"%"}</div>
+                        <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>):
                     (<div className='ml-2 px-3 py-2 w-20  bg-teal-500 text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
                         <img src={downPic} className='w-2 h-2 rotate-180'></img>
-                        <div className='font-bold text-white text-sm'>{coinLists[i].market_cap_change_percentage_24h.toFixed(2)+"%"}</div>
+                        <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>)}
                 </div>
                 <LineChart historicalData={historicalData}></LineChart>
@@ -125,14 +135,22 @@ function CoinOverview(props) {
                 </div>
               </div>
               <div className='col-span-1 p-10'>
-                <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{setShowModalFlag(true)}}>Buy Mong</button>
+                <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{
+                  if(isConnected)
+                    setShowModalFlag(true);
+                  else
+                  {
+                    setShowAlertFlag(true);
+                    setShowAlertText("Please connect your wallet to continue");
+                  }
+                }}>Buy Mong</button>
               </div>
           </div>);
 
           modalContent = (
             <div className='fixed top-0 w-full h-full z-30 flex justify-center transition delay-[40]'>
               <div className='w-full h-full bg-black/30 ' onClick={()=>{setShowModalFlag(false)}}></div>
-              <div id="buyModal" className='animate-bounce absolute bottom-0 transition delay-[40] w-full bg-violet-900 px-10 py-4 rounded-none lg:rounded-2xl flex flex-col space-y-2 z-40'>
+              <div className='fadeup absolute bottom-0 transition delay-[40] w-full bg-violet-900 px-10 py-4 rounded-none lg:rounded-2xl flex flex-col space-y-2 z-40'>
                 <div className='flex justify-between font-bold text-2xl text-white'><span>BUY</span><span>SELL</span></div>
                 <div className='bg-gray-500/50 w-full rounded-xl flex flex-col items-center space-y-4 p-4'>
                     <div className='bg-white rounded-full p-2 -mt-10'><img src={coinLists[i].image} className='w-14 h-14'></img></div>
@@ -170,12 +188,25 @@ function CoinOverview(props) {
       <div className="w-[100vw] relative">
         {isLoading?(<div className='w-full h-[100vh] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
           <div>
-          <div className='hidden py-6 bg-violet-700 lg:flex lg:flex-col justify-center items-center gap-4'>
-            <div className='text-2xl text-white font-bold flex gap-2 items-end'><div>Meme</div><img src={heart} className='w-6 h-6'></img><div>Match</div></div>
+          <div className='p-6 bg-violet-700 lg:flex lg:flex-col justify-center items-center gap-4 relative'>
+            <div className='text-2xl text-white font-bold flex gap-2 items-end'>
+              <div>Meme</div><img src={heart} className='w-6 h-6'></img><div>Match</div>
+            </div>
+            <div className='absolute top-5 right-5'><Web3Button /></div>
           </div>
           {captionContent}
           {chartContent}
-          {showModalFlag==true?modalContent:""}
+          {showModalFlag?modalContent:""}
+          {showAlertFlag?(
+            <div className='fixed top-0 w-full h-full z-30 flex justify-center transition delay-[40]'>
+              <div className='w-full h-full bg-black/30 ' onClick={()=>{setShowAlertFlag(false)}}></div>
+              <div className='fadeshow absolute top-[300px] transition delay-[40] w-[300px] lg:w-[600px] bg-violet-900 px-10 py-4 rounded-none lg:rounded-2xl flex flex-col space-y-4 z-40'>
+                <div className='font-bold text-2xl text-white'><span>ALERT</span></div>
+                <div className='text-xl text-white'>{showAlertText}</div>
+                <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg hover:bg-purple-500' onClick={()=>{setShowAlertFlag(false)}}>OK</button>
+              </div>
+            </div>
+            ):(<div></div>)}
           </div>
         )}         
       </div>

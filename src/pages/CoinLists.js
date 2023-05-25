@@ -10,6 +10,8 @@ function CoinLists() {
     
     const [isLoading, setIsLoading] = useState(false);
     const [coinLists, setCoinLists] = useState(null);
+    const [sortType, setSortType] = useState(1);
+    const [sortDown, setSortDown] = useState(true);
     useEffect(() => {
         // This code will be executed only once, similar to componentDidMount
         //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)
@@ -29,10 +31,11 @@ function CoinLists() {
         setCoinLists(result.data);
         setIsLoading(false);
     };
-    let coinlistsTable ;
+    let coinlistsTable = [];
+    let sortContent = [];
     if(coinLists != undefined)
     {
-     coinlistsTable = coinLists.map((item)=>(
+        coinlistsTable = coinLists.map((item)=>(
         <Link to={`/coinoverview/${item.id}`} className='col-span-1 relative cursor-pointer'>
             <div className='w-full relative'>
                 <div className='absolute w-full h-full  rounded-xl transition deplay-[40] bg-black/30 opacity-0 hover:opacity-100 z-20 flex justify-center items-center'>
@@ -71,9 +74,17 @@ function CoinLists() {
                 </div>
                 <div className='w-full flex justify-center p-10'>
                     <div className='bg-gray-100 border-2 border-gray-200/80 rounded-full flex'>
-                        <div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer'>Price <img src={downPic} className='w-[10px] h-[10px]'></img></div>
-                        <div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer'>Age</div>
-                        <div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer'>Rating</div>
+                        {(sortType==1)?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={()=>{setSortDown(!sortDown)}}>
+                        Price {sortDown?(<img src={downPic} className='w-[10px] h-[10px]'></img>):(<img src={downPic} className='rotate-180 w-[10px] h-[10px]'></img>)}
+                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>{setSortType(1)}}>Price</div>)}
+
+                        {(sortType==2)?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={()=>{setSortDown(!sortDown)}}>
+                        Age {sortDown?(<img src={downPic} className='w-[10px] h-[10px]'></img>):(<img src={downPic} className='rotate-180 w-[10px] h-[10px]'></img>)}
+                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>{setSortType(2)}}>Age</div>)}
+
+                        {(sortType==3)?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={()=>{setSortDown(!sortDown)}}>
+                        Rating {sortDown?(<img src={downPic} className='w-[10px] h-[10px]'></img>):(<img src={downPic} className='rotate-180 w-[10px] h-[10px]'></img>)}
+                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>{setSortType(3)}}>Rating</div>)}
                     </div>
                 </div>         
                 <div className='w-[103vw] lg:w-[101vw] h-3/4 lg:h-1/2 overflow-y-auto'>

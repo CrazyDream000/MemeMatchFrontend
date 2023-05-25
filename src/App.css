@@ -154,7 +154,7 @@ option {
   }
 }
 
-#buyModal {
+.fadeup {
   animation-name: modalfadeup;
   animation-duration: .5s;
   animation-iteration-count: 1;
@@ -163,4 +163,15 @@ option {
 @keyframes modalfadeup {
   from {bottom: -600px;}
   to {bottom: 0px;}
+}
+
+.fadeshow {
+  animation-name: animeFadeShow;
+  animation-duration: .2s;
+  animation-iteration-count: 1;
+}
+
+@keyframes animeFadeShow {
+  from {scale:0;}
+  to {scale:1;}
 }
