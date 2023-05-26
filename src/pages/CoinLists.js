@@ -1,7 +1,7 @@
 import React,  { useState,useEffect } from 'react'
 import axios from 'axios'
 import {Link} from 'react-router-dom'
-import {BsEye} from 'react-icons/bs'
+import {BsEye, BsSdCardFill} from 'react-icons/bs'
 import {BounceLoader} from 'react-spinners'
 function CoinLists() {
     const Background1 = require('../assets/img/tokens/back1.png');
@@ -10,33 +10,86 @@ function CoinLists() {
     
     const [isLoading, setIsLoading] = useState(false);
     const [coinLists, setCoinLists] = useState(null);
-    const [sortType, setSortType] = useState(1);
+    const [sortType, setSortType] = useState("market_cap");
     const [sortDown, setSortDown] = useState(true);
+    const [coinListContent, setCoinListContent] = useState([]);
     useEffect(() => {
         // This code will be executed only once, similar to componentDidMount
         //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)
-
-        fetchData();
-
+        fetchData(sortType, sortDown);
         return () => {
           // This code will be executed just before unmounting the component, similar to componentWillUnmount
         };
     }, []); 
-       
-    const fetchData = async () => {
+    useEffect(() => {
+        if(coinLists!=undefined)
+        {
+            console.log("sorting------------------");
+            console.log(sortType, sortDown);
+            let tmpcoinList  = coinLists;
+            for(var i = 0; i < tmpcoinList.length; i ++)
+            {
+                for(var j = i ; j < tmpcoinList.length; j ++)
+                {
+                    let tmp;
+                    var isSwap = false;
+                    if(sortType == 1)
+                    {
+                        if((sortDown && tmpcoinList[i].market_cap<tmpcoinList[j].market_cap) || (!sortDown && tmpcoinList[i].market_cap>tmpcoinList[j].market_cap))
+                           isSwap = true
+                    }
+                    else if(sortType == 2)
+                    {
+                        if((sortDown && tmpcoinList[i].market_cap>tmpcoinList[j].market_cap) || (!sortDown && tmpcoinList[i].market_cap<tmpcoinList[j].market_cap))
+                        isSwap = true
+                    }
+                    else if(sortType == 3)
+                    {
+                        if((sortDown && tmpcoinList[i].market_cap_rank>tmpcoinList[j].market_cap_rank) || (!sortDown && tmpcoinList[i].market_cap_rank<tmpcoinList[j].market_cap_rank))
+                        isSwap = true
+                    }
+                    if(isSwap)
+                    {
+                        tmp = tmpcoinList[i];
+                        tmpcoinList[i] = tmpcoinList[j];
+                        tmpcoinList[j] = tmp;
+                    }
+                }
+            }
+            console.log("tmpList--------")
+            console.log(tmpcoinList);
+            setCoinLists(tmpcoinList);
+        }
+    }, [sortType, sortDown]);
+    const fetchData = async (st, sd) => {
         setIsLoading(true);
         const result = await axios.get(
-            `https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`,
+            `https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=${st}&per_page=100&page=1&sparkline=false&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`,
         );
-        setCoinLists(result.data);
+        console.log("coninlist--------------");
+        console.log(result.data);
+        if(sd)
+            setCoinLists(result.data);
+        else
+            setCoinLists(result.data.reverse());
         setIsLoading(false);
     };
     let coinlistsTable = [];
-    let sortContent = [];
+    
+    function changeSortType(n){
+        fetchData(n, sortDown)
+        setSortType(n);
+    }
+
+    function changeSortDown(){
+        fetchData(sortType,!sortDown);
+        setSortDown(!sortDown);
+    }
+
     if(coinLists != undefined)
-    {
+    {   
         coinlistsTable = coinLists.map((item)=>(
-        <Link to={`/coinoverview/${item.id}`} className='col-span-1 relative cursor-pointer'>
+        <Link to={`/coinoverview/${item.id}`} className='col-span-1 relative cursor-pointer animeFadeShow'>
             <div className='w-full relative'>
                 <div className='absolute w-full h-full  rounded-xl transition deplay-[40] bg-black/30 opacity-0 hover:opacity-100 z-20 flex justify-center items-center'>
                     <BsEye className="text-white w-10 h-10"></BsEye>
@@ -66,37 +119,37 @@ function CoinLists() {
     }
     return (
       <div className="h-[100vh] w-[100vw]">
-        {isLoading?(<div className='w-full h-[100vh] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
-            <div className='h-[100vh] w-[100vw] overflow-hidden'>
-                <div className='py-6 lg:py-[90px] bg-violet-700 flex flex-col justify-center items-center gap-4'>
-                    <div className='text-2xl lg:text-5xl text-white font-bold flex gap-2 lg:gap-4 items-end'><div>Meme</div><img src={heart} className='w-6 h-6 lg:w-full lg:h-full'></img><div>Match</div></div>
-                    <div className='hidden lg:block text-xl text-white font-bold'>Somthing about meme match here </div>
-                </div>
-                <div className='w-full flex justify-center p-10'>
+        <div className='h-[100vh] w-[100vw] overflow-hidden'>
+            <div className='py-6 lg:py-[50px] bg-violet-700 flex flex-col justify-center items-center gap-4'>
+                <div className='text-2xl lg:text-5xl text-white font-bold flex gap-2 lg:gap-4 items-end'><div>Meme</div><img src={heart} className='w-6 h-6 lg:w-full lg:h-full'></img><div>Match</div></div>
+                <div className='hidden lg:block text-xl text-white font-bold'>Somthing about meme match here </div>
+            </div>
+            <div className='h-[90%] overflow-y-scroll'>
+                <div className='w-full flex justify-center p-5 lg:p-10'>
                     <div className='bg-gray-100 border-2 border-gray-200/80 rounded-full flex'>
-                        {(sortType==1)?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={()=>{setSortDown(!sortDown)}}>
+                        {(sortType=="market_cap")?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={changeSortDown}>
                         Price {sortDown?(<img src={downPic} className='w-[10px] h-[10px]'></img>):(<img src={downPic} className='rotate-180 w-[10px] h-[10px]'></img>)}
-                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>{setSortType(1)}}>Price</div>)}
+                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>changeSortType("market_cap")}>Price</div>)}
 
-                        {(sortType==2)?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={()=>{setSortDown(!sortDown)}}>
+                        {(sortType=="price_change_percentage_24h")?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={changeSortDown}>
                         Age {sortDown?(<img src={downPic} className='w-[10px] h-[10px]'></img>):(<img src={downPic} className='rotate-180 w-[10px] h-[10px]'></img>)}
-                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>{setSortType(2)}}>Age</div>)}
+                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>changeSortType("price_change_percentage_24h")}>Age</div>)}
 
-                        {(sortType==3)?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={()=>{setSortDown(!sortDown)}}>
+                        {(sortType=="market_cap_rank")?(<div className='px-6 py-3 flex items-center text-lg rounded-full bg-violet-700 text-white gap-1 cursor-pointer' onClick={changeSortDown}>
                         Rating {sortDown?(<img src={downPic} className='w-[10px] h-[10px]'></img>):(<img src={downPic} className='rotate-180 w-[10px] h-[10px]'></img>)}
-                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>{setSortType(3)}}>Rating</div>)}
+                        </div>):(<div className='px-6 py-3 flex items-center text-lg rounded-full text-gray-400 cursor-pointer' onClick={()=>changeSortType("market_cap_rank")}>Rating</div>)}
                     </div>
                 </div>         
-                <div className='w-[103vw] lg:w-[101vw] h-3/4 lg:h-1/2 overflow-y-auto'>
+                <div className='w-full'>
                     <div className=' flex justify-center pl-2 pr-4 md:pl-2 md:pr-8 lg:pr-4'>
-                        <div className='grid grid-cols-1 w-[425px] md:grid-cols-2 md:w-[768px] lg:grid-cols-3 lg:w-[1024px] xl:grid-cols-4 xl:w-[1360px] gap-2'>
-                            {coinlistsTable}
+                        <div>
+                            {isLoading?(<div className='w-full mt-[200px] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
+                            <div className='grid grid-cols-1 w-[425px] md:grid-cols-2 md:w-[768px] lg:grid-cols-3 lg:w-[1024px] xl:grid-cols-4 xl:w-[1360px] gap-2'>{coinlistsTable}</div>)}
                         </div>
                     </div>
                 </div>
             </div>
-        )}
-         
+        </div>         
       </div>
     );
   }

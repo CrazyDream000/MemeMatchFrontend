@@ -32,6 +32,31 @@ class ApexChart extends React.Component {
             }
           ]
         },
+        grid: {
+          show: true,
+          borderColor: '#FFFFFF',
+          strokeDashArray: 0,
+          position: 'back',
+          xaxis: {
+              lines: {
+                  show: false
+              }
+          },   
+          yaxis: {
+              lines: {
+                  show: true
+              }
+          },  
+          row: {
+              colors: undefined,
+              opacity: 0.5
+          },  
+          column: {
+              colors: undefined,
+              opacity: 0.5
+          },  
+      },
+      
         chart: {
           type: "area",
           stacked: false,
@@ -50,24 +75,6 @@ class ApexChart extends React.Component {
               reset: false | '<img src="/static/icons/reset.png" width="20">',
               customIcons: []
             },
-            export: {
-              csv: {
-                filename: undefined,
-                columnDelimiter: ',',
-                headerCategory: 'category',
-                headerValue: 'value',
-                dateFormatter(timestamp) {
-                  return new Date(timestamp).toDateString()
-                }
-              },
-              svg: {
-                filename: undefined,
-              },
-              png: {
-                filename: undefined,
-              }
-            },
-            autoSelected: 'zoom' 
           },
         },
         dataLabels: {
@@ -91,8 +98,12 @@ class ApexChart extends React.Component {
           }
         },
         yaxis: {
-         
+          show: true,
+          showAlways: false,
           labels: {
+              show:true,
+              minWidth:0,
+              maxWidth:50,
               formatter: function (val) {
                 if(val > 100)
                   return (val).toFixed(2) + "$";
@@ -102,8 +113,66 @@ class ApexChart extends React.Component {
           },    
         },
         xaxis: {
+          tickPlacement: 'on',
           type: "datetime",
         },
+        responsive:[{
+          breakpoint:500,
+          options:{
+            xaxis:{
+              show:false,
+              showAlways: false,
+              labels: {
+                show:false
+              },
+              axisBorder: {
+                show:false
+              },
+              axisTicks: {
+                show: false,
+              }
+            },
+            yaxis: {
+              show: false,
+              showAlways: false,
+              labels: {
+                show:false,
+                minWidth:0,
+                maxWidth:50,
+                formatter: function (val) {
+                  if(val > 100)
+                    return (val).toFixed(2) + "$";
+                  else
+                    return (val).toFixed(6) + "$";
+                },
+              },    
+            },
+          }
+        }],
+        grid: {
+          show: true,
+          borderColor: '#F2F2F9',
+          strokeDashArray: 0,
+          position: 'back',
+          xaxis: {
+              lines: {
+                  show: false
+              }
+          },   
+          yaxis: {
+              lines: {
+                  show: true
+              }
+          },  
+          row: {
+              colors: undefined,
+              opacity: 0.5
+          },  
+          column: {
+              colors: undefined,
+              opacity: 0.5
+          },  
+      },
         tooltip: {
           shared: false,
           y: {
@@ -149,7 +218,7 @@ class ApexChart extends React.Component {
         chart: {
           type: "area",
           stacked: false,
-          height: 350,
+          height: 'auto',
           toolbar: {
             show: false,
             offsetX: 0,
@@ -190,10 +259,6 @@ class ApexChart extends React.Component {
         markers: {
           size: 0,
         },
-        title: {
-          text: "Stock Price Movement",
-          align: "left",
-        },
         fill: {
           type: "gradient",
           gradient: {
@@ -205,19 +270,57 @@ class ApexChart extends React.Component {
           }
         },
         yaxis: {
-         
+          show: true,
+          showAlways: false,
           labels: {
-              formatter: function (val) {
-                if(val > 100)
-                  return (val).toFixed(2) + "$";
-                else
-                  return (val).toFixed(6) + "$";
-              },
+            show:true,
+            minWidth:0,
+            maxWidth:50,
+            formatter: function (val) {
+              if(val > 100)
+                return (val).toFixed(2) + "$";
+              else
+                return (val).toFixed(6) + "$";
+            },
           },    
         },
         xaxis: {
+          tickPlacement: 'on',
           type: "datetime",
         },
+        responsive:[{
+          breakpoint:500,
+          options:{
+            xaxis:{
+              show:false,
+              showAlways: false,
+              labels: {
+                show:false
+              },
+              axisBorder: {
+                show:false
+              },
+              axisTicks: {
+                show: false,
+              }
+            },
+            yaxis: {
+              show: false,
+              showAlways: false,
+              labels: {
+                show:false,
+                minWidth:0,
+                maxWidth:50,
+                formatter: function (val) {
+                  if(val > 100)
+                    return (val).toFixed(2) + "$";
+                  else
+                    return (val).toFixed(6) + "$";
+                },
+              },    
+            },
+          }
+        }],
         tooltip: {
           shared: false,
           y: {

@@ -7,16 +7,19 @@ import LineChart from '../component/LineChart';
 import { Circle2 } from 'react-preloaders';
 import {BsStarFill, BsStarHalf, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
 import {BounceLoader} from 'react-spinners'
+
 import { Web3Button } from '@web3modal/react'
 
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
+
+import { useWeb3Modal } from "@web3modal/react";
+
 
 function CoinOverview(props) {
     const { id } = useParams();
     const Background1 = require('../assets/img/tokens/back1.png');
     const heart = require('../assets/img/tokens/Vector.png');
     const downPic = require('../assets/img/tokens/down.png');
-
     const [coinLists, setCoinLists] = useState(null);
     const [historicalData, setHistoricalData] = useState(null);
     const [searchState, setSearchState] = useState(1);
@@ -28,30 +31,32 @@ function CoinOverview(props) {
 
     const { address, isConnected } = useAccount()
     
+    const { isOpen, open, close, setDefaultChain } = useWeb3Modal();
 
+    const [web3Modal, setWeb3Modal] = useState(null)
     useEffect(() => {
+        ///Connect Wallet
         // This code will be executed only once, similar to componentDidMount
-        //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)
-        const fetchData = async () => {
-          setIsLoading(true);
-          const coinListresult = await axios.get(
-              'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk'
-          );
-          setCoinLists(coinListresult.data);
-          setIsLoading(false);
-        };
-            
+        //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)    
+        if(!isConnected)  
+          open();
         getCoinData(id,1);
         fetchData();
         return () => {
           // This code will be executed just before unmounting the component, similar to componentWillUnmount
-          
         };
     }, []); 
-    const onButtonClick = () => {
-      alert("1");
-    }
-    async function getCoinData (coinID, period) {
+
+    //coingecko api function get coins market data
+    const fetchData = async () => {
+      setIsLoading(true);
+      const coinListresult = await axios.get(
+          'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk'
+      );
+      setCoinLists(coinListresult.data);
+      setIsLoading(false);
+    };
+    const getCoinData = async (coinID, period) => {
       const result = await axios.get(
           `https://pro-api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=${period}&interval=hourly&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
       );
@@ -59,6 +64,10 @@ function CoinOverview(props) {
       setCurrentId(coinID);
       setSearchState(period);
     };
+
+    async function connectToWallet() {
+      const provider = await web3Modal.connect();
+    }
     let captionContent=[];
     let chartContent = [];
     let modalContent = [];
@@ -84,15 +93,15 @@ function CoinOverview(props) {
               )];
           }
           captionContent = (
-            <div className='w-full h-[300px] overflow-hidden relative flex justify-between items-center'>
+            <div className='w-full h-[200px] sm:h-[300px] overflow-hidden relative flex justify-between items-center'>
               <img className='absolute w-full -top-[100px] md:-top-[200px] lg:-top-[400px] xl:-top-[600px] z-0' src={Background1}></img>
               <button className='ml-5 w-10 h-10 bg-white rounded-full transition delay-[40] hover:bg-gray-400 hover:text-white z-10 relative flex justify-center items-center' onClick={()=>{getCoinData(prevId,1)}}>
                   <BsArrowLeftShort className='w-8 h-8'/>
               </button>
-              <div className='flex flex-col relative justify-center items-center space-y-10'>
+              <div className='flex flex-col relative justify-center items-center space-y-3 sm:space-y-10'>
                   <div className='flex flex-col items-center'>
-                    <div className='bg-white rounded-full p-5'><img src={coinLists[i].image} className='w-20 h-20'></img></div>
-                      <div className='text-3xl lg:text-5xl font-bold text-white'>{coinLists[i].symbol.toUpperCase()}</div>
+                     <div className='bg-white rounded-full p-5'><img src={coinLists[i].image} className='w-10 sm:w-20 h-10 sm:h-20'></img></div>
+                      <div className='text-2xl lg:text-5xl font-bold text-white'>{coinLists[i].symbol.toUpperCase()}</div>
                   </div>
                   <button className='w-10 h-10 text-black bg-white rounded-full flex justify-center items-center transition delay-[40] hover:bg-red-500 hover:text-white'><BsHeart/></button>
               </div>
@@ -104,20 +113,20 @@ function CoinOverview(props) {
           let market_cap_change_rate = ((historicalData[historicalData.length-1][1] - historicalData[0][1])/historicalData[0][1] * 100);
           chartContent = (
           <div className='w-full flex flex-col lg:grid lg:grid-cols-4'>
-              <div className='col-span-3 px-10 py-4'>
-                <div className='text-2xl lg:text-5xl text-center font-bold lg:text-left'>{"$" + coinLists[i].market_cap.toLocaleString()}</div>
-                <div className='flex py-4 md:space-x-10 font-bold'>
+              <div className='col-span-3 py-4 h-[70vh] md:h-full'>
+                <div className='text-2xl px-4  md:px-10  lg:text-5xl text-center font-bold lg:text-left'>{"$" + coinLists[i].market_cap.toLocaleString()}</div>
+                <div className='flex px-4  md:px-10  py-4 md:space-x-10 font-bold justify-between md:justify-start'>
                   {searchState == 1?
-                      (<button className='px-4 py-2 bg-purple-500 text-white rounded-lg' onClick={()=>{getCoinData(currentId, 1)}}>Today</button>):
-                      (<button className='px-4 py-2 text-gray-500 transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 1)}}>Today</button>)
+                      (<button className='px-2 py-1 bg-purple-500 text-md md:text-lg text-white rounded-lg' onClick={()=>{getCoinData(currentId, 1)}}>Today</button>):
+                      (<button className='px-2 py-1 text-gray-500 text-md md:text-lg transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 1)}}>Today</button>)
                   }
                   {searchState == 7?
-                      (<button className='px-4 py-2 bg-purple-500 text-white rounded-lg' onClick={()=>{getCoinData(currentId, 7)}}>7 days</button>):
-                      (<button className='px-4 py-2 text-gray-500 transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 7)}}>7 days</button>)
+                      (<button className='px-2 py-1 bg-purple-500 text-md md:text-lg text-white rounded-lg' onClick={()=>{getCoinData(currentId, 7)}}>7 days</button>):
+                      (<button className='px-2 py-1 text-gray-500 text-md md:text-lg transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 7)}}>7 days</button>)
                   }
                   {searchState == 14?
-                      (<button className='px-4 py-2 bg-purple-500 text-white rounded-lg' onClick={()=>{getCoinData(currentId, 14)}}>14 days</button>):
-                      (<button className='px-4 py-2 text-gray-500 transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 14)}}>14 days</button>)
+                      (<button className='px-2 py-1 bg-purple-500 text-md md:text-lg text-white rounded-lg' onClick={()=>{getCoinData(currentId, 14)}}>14 days</button>):
+                      (<button className='px-2 py-1 text-gray-500 text-md md:text-lg transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 14)}}>14 days</button>)
                   }
                   {market_cap_change_rate<0?
                     (<div className='ml-2 px-3 py-2 w-20 bg-[#D8494A] text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
@@ -129,19 +138,23 @@ function CoinOverview(props) {
                         <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>)}
                 </div>
-                <LineChart historicalData={historicalData}></LineChart>
-                <div className='flex flex-row space-x-2 w-full justify-center'>
+                <div className="">
+                   <LineChart historicalData={historicalData}></LineChart>
+                </div>
+                <div className=' px-4  md:px-10 hidden md:flex md:flex-row space-x-2 w-full justify-center'>
                   {starContent}
                 </div>
               </div>
-              <div className='col-span-1 p-10'>
+              <div className='col-span-1 p-5 md:p-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-5 md:space-y-0'>
+                <div className='flex flex-row md:hidden space-x-2 w-full justify-center'>
+                  {starContent}
+                </div>
                 <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{
                   if(isConnected)
                     setShowModalFlag(true);
                   else
                   {
-                    setShowAlertFlag(true);
-                    setShowAlertText("Please connect your wallet to continue");
+                    connectToWallet();
                   }
                 }}>Buy Mong</button>
               </div>
@@ -175,7 +188,7 @@ function CoinOverview(props) {
                   </div>
                 </div>
                 <div className='w-full'>
-                  <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-500' onCLick={onButtonClick}>Buy Mong</button>
+                  <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-500'>Buy Mong</button>
                 </div>
               </div>
             </div>
@@ -185,14 +198,14 @@ function CoinOverview(props) {
     }
     return (
     
-      <div className="w-[100vw] relative">
+      <div className="relative">
         {isLoading?(<div className='w-full h-[100vh] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
           <div>
           <div className='p-6 bg-violet-700 lg:flex lg:flex-col justify-center items-center gap-4 relative'>
             <div className='text-2xl text-white font-bold flex gap-2 items-end'>
               <div>Meme</div><img src={heart} className='w-6 h-6'></img><div>Match</div>
             </div>
-            <div className='absolute top-5 right-5'><Web3Button /></div>
+            <div className='absolute top-5 right-5'><Web3Button className="w-10"/></div>
           </div>
           {captionContent}
           {chartContent}

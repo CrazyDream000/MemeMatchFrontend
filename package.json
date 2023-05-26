@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@web3-react/core": "^8.2.0",
     "@web3modal/ethereum": "^2.4.1",
     "@web3modal/react": "^2.4.1",
     "aos": "^2.3.4",
@@ -27,7 +28,8 @@
     "react-spinners": "^0.13.8",
     "viem": "^0.3.36",
     "wagmi": "^1.0.6",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "web3modal": "^1.9.12"
   },
   "scripts": {
     "start": "react-scripts start",

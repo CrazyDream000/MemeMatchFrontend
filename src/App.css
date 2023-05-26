@@ -154,6 +154,18 @@ option {
   }
 }
 
+.yaxis-line{
+  max-width:160px;
+  width:auto;
+}
+
+@media only screen and (min-width: 500px) {
+  .yaxis-line{
+    max-width: 0px!important;
+    width:0px!important;
+  }
+}
+
 .fadeup {
   animation-name: modalfadeup;
   animation-duration: .5s;
