@@ -65,9 +65,6 @@ function CoinOverview(props) {
       setSearchState(period);
     };
 
-    async function connectToWallet() {
-      const provider = await web3Modal.connect();
-    }
     let captionContent=[];
     let chartContent = [];
     let modalContent = [];
@@ -154,7 +151,7 @@ function CoinOverview(props) {
                     setShowModalFlag(true);
                   else
                   {
-                    connectToWallet();
+                    open();
                   }
                 }}>Buy Mong</button>
               </div>

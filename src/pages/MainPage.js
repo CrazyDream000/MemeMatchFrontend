@@ -16,7 +16,7 @@ function MainPage() {
             <div className='flex items-center space-x-4'> <div className='w-4 h-4 bg-white rounded-full'></div><span className=''>Contracts renounced</span></div>
          </div>
          <div className=''>
-            <Link to="/coinlists" className='px-10 py-4 bg-white rounded-lg transition delay-[30] border-2 border-bg-violet-800/0 hover:bg-violet-800 hover:text-white hover:border-bg-violet-800/100 active:bg-white'>Enter | Register in future</Link>
+            <Link to="/coinlists" className='px-6 py-4 bg-white rounded-lg transition delay-[30] border-2 border-bg-violet-800/0 hover:bg-violet-800 hover:text-white hover:border-bg-violet-800/100 active:bg-white'>Enter | Register in future</Link>
          </div>
         <div className='text-white text-lg'>
            By entering i agree to terms & conditions
