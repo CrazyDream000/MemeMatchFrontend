@@ -14,7 +14,7 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi'
 
 import { useWeb3Modal } from "@web3modal/react";
 
-import {Timeline, Tweet} from 'react-twitter-widgets';
+import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
 
 function CoinOverview(props) {
     const { id } = useParams();
@@ -23,13 +23,15 @@ function CoinOverview(props) {
     const downPic = require('../assets/img/tokens/down.png');
     const [coinLists, setCoinLists] = useState(null);
     const [historicalData, setHistoricalData] = useState(null);
+    const [coinDetail, setCoinDetail] = useState(null);
+
     const [searchState, setSearchState] = useState(1);
     const [currentId, setCurrentId] = useState(-1);
     const [showModalFlag, setShowModalFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [showAlertFlag, setShowAlertFlag] = useState(false);
     const [showAlertText, setShowAlertText] = useState("");
-
+  
     const { address, isConnected } = useAccount()
     
     const { isOpen, open, close, setDefaultChain } = useWeb3Modal();
@@ -59,6 +61,11 @@ function CoinOverview(props) {
       const result = await axios.get(
           `https://pro-api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=${period}&interval=hourly&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
       );
+      const coinResult = await axios.get(
+        `https://pro-api.coingecko.com/api/v3/coins/${coinID}?localization=false&tickers=false&market_data=false&community_data=true&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
+      );
+
+      setCoinDetail(coinResult.data.links.twitter_screen_name);
       setHistoricalData(result.data.prices);
       setCurrentId(coinID);
       setSearchState(period);
@@ -137,7 +144,11 @@ function CoinOverview(props) {
                 <div className="">
                    <LineChart historicalData={historicalData}></LineChart>
                    <div className='lg:hidden w-full p-4 flex justify-center'>
-                    <Tweet options={{width:800}} tweetId="841418541026877441" />
+                    <TwitterTimelineEmbed
+                      sourceType="profile"
+                      screenName={coinDetail}
+                      options={{height: 400}}
+                    />
                   </div>
                 </div>
                 <div className=' px-4  md:px-10 hidden md:flex md:flex-row space-x-2 w-full justify-center'>
@@ -157,7 +168,11 @@ function CoinOverview(props) {
                   }
                 }}>Buy Mong</button>
                 <div className='hidden lg:block w-full'>
-                  <Tweet tweetId="841418541026877441" />
+                    <TwitterTimelineEmbed
+                      sourceType="profile"
+                      screenName={coinDetail}
+                      options={{height: 400}}
+                    />
                 </div>
               </div>
           </div>);
