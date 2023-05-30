@@ -143,7 +143,7 @@ function CoinOverview(props) {
                 </div>
                 <div className="">
                    <LineChart historicalData={historicalData}></LineChart>
-                   <div className='lg:hidden w-full p-4 flex justify-center'>
+                   <div className='lg:hidden w-full mt-4 flex justify-center'>
                     <TwitterTimelineEmbed
                       sourceType="profile"
                       screenName={coinDetail}

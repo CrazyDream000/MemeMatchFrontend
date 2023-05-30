@@ -141,7 +141,7 @@ function CoinLists() {
                     </div>
                 </div>         
                 <div className='w-full'>
-                    <div className=' flex justify-center px-2 md:px-4 lg:px-6'>
+                    <div className=' flex justify-center px-20 md:px-4 lg:px-6'>
                         {isLoading?(<div className='w-full mt-[200px] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
                         <div className='grid grid-cols-1 w-[425px] md:grid-cols-2 md:w-[768px] lg:grid-cols-3 lg:w-[1024px] xl:grid-cols-4 xl:w-[1360px] gap-2'>{coinlistsTable}</div>)}
                     </div>
