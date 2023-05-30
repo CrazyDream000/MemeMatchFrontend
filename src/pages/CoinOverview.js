@@ -147,7 +147,7 @@ function CoinOverview(props) {
                     <TwitterTimelineEmbed
                       sourceType="profile"
                       screenName={coinDetail}
-                      options={{height: 400}}
+                      options={{width:800, height: 400}}
                     />
                   </div>
                 </div>
@@ -167,7 +167,7 @@ function CoinOverview(props) {
                     open();
                   }
                 }}>Buy Mong</button>
-                <div className='hidden lg:block w-full'>
+                <div className='hidden lg:block w-full p-4'>
                     <TwitterTimelineEmbed
                       sourceType="profile"
                       screenName={coinDetail}
