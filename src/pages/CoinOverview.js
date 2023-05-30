@@ -108,8 +108,8 @@ function CoinOverview(props) {
           );
           let market_cap_change_rate = ((historicalData[historicalData.length-1][1] - historicalData[0][1])/historicalData[0][1] * 100);
           chartContent = (
-          <div className='w-full flex flex-col lg:grid lg:grid-cols-5'>
-              <div className='col-span-3 py-4 h-[70vh] md:h-full'>
+          <div className='w-full flex flex-col lg:grid lg:grid-cols-9'>
+              <div className='col-span-6 py-4 h-[70vh] md:h-full'>
                 <div className='text-2xl px-4  md:px-10  lg:text-5xl text-center font-bold lg:text-left'>{"$" + coinLists[i].market_cap.toLocaleString()}</div>
                 <div className='flex px-4  md:px-10  py-4 md:space-x-10 font-bold justify-between md:justify-start'>
                   {searchState == 1?
@@ -134,9 +134,9 @@ function CoinOverview(props) {
                         <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>)}
                 </div>
-                <div className="flex flex-col items-center">
+                <div className="">
                    <LineChart historicalData={historicalData}></LineChart>
-                   <div className='block lg:hidden w-full p-4'>
+                   <div className='lg:hidden w-full p-4 flex justify-center'>
                     <Tweet options={{maxWidth:800, width:'100%'}} tweetId="841418541026877441" />
                   </div>
                 </div>
@@ -144,7 +144,7 @@ function CoinOverview(props) {
                   {starContent}
                 </div>
               </div>
-              <div className='col-span-2 p-5 md:p-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-5 md:space-y-0'>
+              <div className='col-span-3 p-5 md:p-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-5 md:space-y-0'>
                 <div className='flex flex-row md:hidden space-x-2 w-full justify-center'>
                   {starContent}
                 </div>
