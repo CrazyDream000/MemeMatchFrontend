@@ -96,7 +96,7 @@ function CoinLists() {
                 </div>
                 <img className="w-full" src={Background1}></img>
             </div>
-            <div className='absolute left-0 top-5 w-[100%] px-8 flex flex-row justify-between'>
+            <div className='absolute left-0 top-5 w-[100%] px-2 md:px-8 flex flex-row justify-between'>
                 <img className='w-[25%] h-full' src={item.image}></img>
                 <div className='flex flex-col'>
                     <div className='font-bold text-white text-3xl'>{(item.market_cap/1000000).toFixed(2) + "M"}</div>
@@ -142,10 +142,8 @@ function CoinLists() {
                 </div>         
                 <div className='w-full'>
                     <div className=' flex justify-center px-2 md:px-4 lg:px-6'>
-                    
-                            {isLoading?(<div className='w-full mt-[200px] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
-                            <div className='grid grid-cols-1 w-[425px] md:grid-cols-2 md:w-[768px] lg:grid-cols-3 lg:w-[1024px] xl:grid-cols-4 xl:w-[1360px] gap-2'>{coinlistsTable}</div>)}
-             
+                        {isLoading?(<div className='w-full mt-[200px] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
+                        <div className='grid grid-cols-1 w-[425px] md:grid-cols-2 md:w-[768px] lg:grid-cols-3 lg:w-[1024px] xl:grid-cols-4 xl:w-[1360px] gap-2'>{coinlistsTable}</div>)}
                     </div>
                 </div>
             </div>
