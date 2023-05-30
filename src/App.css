@@ -154,9 +154,8 @@ option {
   }
 }
 
-.twitter-widget{
+.twitter-tweet>iframe{
   width: 100%!important;
-  max-width: 800px!important;
 }
 
 .fadeup {
