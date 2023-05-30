@@ -136,8 +136,8 @@ function CoinOverview(props) {
                 </div>
                 <div className="">
                    <LineChart historicalData={historicalData}></LineChart>
-                   <div className='block lg:hidden w-full'>
-                    <Tweet options={{maxWidth:800}} tweetId="841418541026877441" />
+                   <div className='block lg:hidden w-full p-4'>
+                    <Tweet options={{maxWidth:800, width:'100%'}} tweetId="841418541026877441" />
                   </div>
                 </div>
                 <div className=' px-4  md:px-10 hidden md:flex md:flex-row space-x-2 w-full justify-center'>
@@ -157,7 +157,7 @@ function CoinOverview(props) {
                   }
                 }}>Buy Mong</button>
                 <div className='hidden lg:block w-full'>
-                  <Tweet options={{maxWidth:800}} tweetId="841418541026877441" />
+                  <Tweet options={{maxWidth:800, width:'100%'}} tweetId="841418541026877441" />
                 </div>
               </div>
           </div>);
