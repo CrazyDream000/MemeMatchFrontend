@@ -91,7 +91,7 @@ function CoinLists() {
         coinlistsTable = coinLists.map((item)=>(
         <Link to={`/coinoverview/${item.id}`} className='col-span-1 relative cursor-pointer animeFadeShow'>
             <div className='w-full relative'>
-                <div className='absolute w-full h-full  rounded-xl transition deplay-[40] bg-black/30 opacity-0 hover:opacity-100 z-20 flex justify-center items-center'>
+                <div className='absolute w-full h-full  rounded-2xl transition deplay-[40] bg-black/30 opacity-0 hover:opacity-100 z-20 flex justify-center items-center'>
                     <BsEye className="text-white w-10 h-10"></BsEye>
                 </div>
                 <img className="w-full" src={Background1}></img>
@@ -141,7 +141,7 @@ function CoinLists() {
                     </div>
                 </div>         
                 <div className='w-full'>
-                    <div className=' flex justify-center px-20 md:px-4 lg:px-6'>
+                    <div className=' flex justify-center px-6 md:px-4 lg:px-6'>
                         {isLoading?(<div className='w-full mt-[200px] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
                         <div className='grid grid-cols-1 w-[425px] md:grid-cols-2 md:w-[768px] lg:grid-cols-3 lg:w-[1024px] xl:grid-cols-4 xl:w-[1360px] gap-2'>{coinlistsTable}</div>)}
                     </div>
