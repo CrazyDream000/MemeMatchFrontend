@@ -154,6 +154,11 @@ option {
   }
 }
 
+.twitter-widget{
+  width: 100%!important;
+  max-width: 800px!important;
+}
+
 .fadeup {
   animation-name: modalfadeup;
   animation-duration: .5s;
