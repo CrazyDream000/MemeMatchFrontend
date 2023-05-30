@@ -141,13 +141,13 @@ function CoinOverview(props) {
                         <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>)}
                 </div>
-                <div className="">
+                <div className="pb-20 md:pb-0">
                    <LineChart historicalData={historicalData}></LineChart>
                    <div className='lg:hidden w-full mt-4 flex justify-center'>
                     <TwitterTimelineEmbed
                       sourceType="profile"
                       screenName={coinDetail}
-                      options={{width:800, height: 400}}
+                      options={{height: 400}}
                     />
                   </div>
                 </div>
@@ -167,7 +167,7 @@ function CoinOverview(props) {
                     open();
                   }
                 }}>Buy Mong</button>
-                <div className='hidden lg:block w-full p-4'>
+                <div className='hidden lg:block w-full mt-4'>
                     <TwitterTimelineEmbed
                       sourceType="profile"
                       screenName={coinDetail}
