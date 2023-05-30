@@ -14,7 +14,7 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi'
 
 import { useWeb3Modal } from "@web3modal/react";
 
-import {Timeline} from 'react-twitter-widgets';
+import {Timeline, Tweet} from 'react-twitter-widgets';
 
 function CoinOverview(props) {
     const { id } = useParams();
@@ -153,14 +153,7 @@ function CoinOverview(props) {
                     open();
                   }
                 }}>Buy Mong</button>
-                <Timeline
-                  dataSource={{
-                    sourceType: "list",
-                    ownerScreenName: "twitter",
-                    id: "1528295587891798017"
-                  }}
-                  options={{ width: "400", height: "400" }}
-                />
+                <Tweet tweetId="841418541026877441" />
               </div>
           </div>);
 
