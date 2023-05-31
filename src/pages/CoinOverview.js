@@ -7,8 +7,8 @@ import LineChart from '../component/LineChart';
 import { Circle2 } from 'react-preloaders';
 import {BsStarFill, BsStarHalf, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
 import {BounceLoader} from 'react-spinners'
-import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
 
+import TwitterFeed from '../component/TwitterFeed';
 
 function CoinOverview(props) {
     const { id } = useParams();
@@ -132,14 +132,7 @@ function CoinOverview(props) {
                 </div>
                 <div className="pb-32 md:pb-0">
                    <LineChart historicalData={historicalData}></LineChart>
-                   <div className='lg:hidden w-full mt-4 p-4'>
-                    <TwitterTimelineEmbed
-                      className="w-full"
-                      sourceType="profile"
-                      screenName={coinDetail}
-                      options={{height: 400}}
-                    />
-                  </div>
+                   <TwitterFeed  className='lg:hidden w-full mt-4 p-4' coinDetail={coinDetail}></TwitterFeed>
                 </div>
                 <div className=' px-4  md:px-10 hidden md:flex md:flex-row space-x-2 w-full justify-center'>
                   {starContent}
@@ -152,13 +145,8 @@ function CoinOverview(props) {
                 <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{
                     setShowModalFlag(true);
                 }}>Buy Mong</button>
-                <div className='hidden lg:block w-full pt-4'>
-                    <TwitterTimelineEmbed
-                      sourceType="profile"
-                      screenName={coinDetail}
-                      options={{height: 400}}
-                    />
-                </div>
+                <TwitterFeed className='hidden lg:block w-full pt-4' coinDetail={coinDetail}>
+                </TwitterFeed>
               </div>
           </div>);
 
@@ -166,7 +154,7 @@ function CoinOverview(props) {
             <div className='fixed top-0 w-full h-full z-30 flex justify-center transition delay-[40]'>
               <div className='w-full h-full bg-black/30 ' onClick={()=>{setShowModalFlag(false)}}></div>
               <div className='fadeup absolute bottom-0 transition delay-[40] w-full md:w-[450px] md:bottom-[50px] bg-white px-5 py-4 rounded-none lg:rounded-2xl flex flex-col items-center space-y-2 z-40'>
-               <iframe width="400" height="720" frameborder="0" allow="clipboard-read *; clipboard-write *; web-share *; accelerometer *; autoplay *; camera *; gyroscope *; payment *; geolocation *"
+               <iframe width="400" height="600" frameborder="0" allow="clipboard-read *; clipboard-write *; web-share *; accelerometer *; autoplay *; camera *; gyroscope *; payment *; geolocation *"
                src="https://flooz.xyz/embed/trade?swapDisabled=false&swapToTokenAddress=0xf648F4646fd6CfE6b3107F47e130FF9bbda6152C&swapLockToToken=true&onRampDisabled=false&onRampAsDefault=false&onRampDefaultAmount=20&onRampTokenAddress=eth&onRampLockToken=true&stakeDisabled=true&network=eth&lightMode=true&primaryColor=%235e38f4&backgroundColor=transparent&roundedCorners=10&padding=22&refId=96VUv9" >
                </iframe>
               </div>
