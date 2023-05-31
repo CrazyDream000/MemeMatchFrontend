@@ -141,10 +141,11 @@ function CoinOverview(props) {
                         <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>)}
                 </div>
-                <div className="pb-40 md:pb-0">
+                <div className="pb-32 md:pb-0">
                    <LineChart historicalData={historicalData}></LineChart>
-                   <div className='lg:hidden w-full mt-4 flex justify-center'>
+                   <div className='lg:hidden w-full mt-4 flex justify-center p-4'>
                     <TwitterTimelineEmbed
+                      className="w-full"
                       sourceType="profile"
                       screenName={coinDetail}
                       options={{height: 400}}
