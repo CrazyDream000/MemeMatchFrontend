@@ -7,14 +7,8 @@ import LineChart from '../component/LineChart';
 import { Circle2 } from 'react-preloaders';
 import {BsStarFill, BsStarHalf, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
 import {BounceLoader} from 'react-spinners'
-
-import { Web3Button } from '@web3modal/react'
-
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
-
-import { useWeb3Modal } from "@web3modal/react";
-
 import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
+
 
 function CoinOverview(props) {
     const { id } = useParams();
@@ -32,11 +26,6 @@ function CoinOverview(props) {
     const [showAlertFlag, setShowAlertFlag] = useState(false);
     const [showAlertText, setShowAlertText] = useState("");
   
-    const { address, isConnected } = useAccount()
-    
-    const { isOpen, open, close, setDefaultChain } = useWeb3Modal();
-
-    const [web3Modal, setWeb3Modal] = useState(null)
     useEffect(() => {
         ///Connect Wallet
         // This code will be executed only once, similar to componentDidMount
@@ -161,12 +150,7 @@ function CoinOverview(props) {
                   {starContent}
                 </div>
                 <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{
-                  if(isConnected)
                     setShowModalFlag(true);
-                  else
-                  {
-                    open();
-                  }
                 }}>Buy Mong</button>
                 <div className='hidden lg:block w-full pt-4'>
                     <TwitterTimelineEmbed
@@ -181,33 +165,10 @@ function CoinOverview(props) {
           modalContent = (
             <div className='fixed top-0 w-full h-full z-30 flex justify-center transition delay-[40]'>
               <div className='w-full h-full bg-black/30 ' onClick={()=>{setShowModalFlag(false)}}></div>
-              <div className='fadeup absolute bottom-0 transition delay-[40] w-full bg-violet-900 px-10 py-4 rounded-none lg:rounded-2xl flex flex-col space-y-2 z-40'>
-                <div className='flex justify-between font-bold text-2xl text-white'><span>BUY</span><span>SELL</span></div>
-                <div className='bg-gray-500/50 w-full rounded-xl flex flex-col items-center space-y-4 p-4'>
-                    <div className='bg-white rounded-full p-2 -mt-10'><img src={coinLists[i].image} className='w-14 h-14'></img></div>
-                    <div className='text-white font-bold text-lg lg:text-xl'>INVEST</div>
-                    <div className='text-white font-bold text-xl lg:text-4xl'>100$</div>
-                    <div className='text-white font-bold text-lg lg:text-xl'>RECEIVE</div>
-                    <div className='text-white font-bold text-xl lg:text-4xl'>12,323,442</div>
-                    <div className='text-gray-400 font-bold text-sm lg:text-md'>2% FIXED FEE INCLUDING SLIPPAGE</div>
-                </div>
-                <div className='grid grid-cols-2 gap-2'>
-                  <div className='col-span-1 bg-gray-500/50 font-bold text-white text-xl lg:text-4xl py-5 rounded-xl transition delay-[40] hover:bg-purple-500 cursor-pointer'>
-                      50$
-                  </div>
-                  <div className='col-span-1 bg-gray-500/50 font-bold text-white text-xl lg:text-4xl py-5 rounded-xl transition delay-[40] hover:bg-purple-500 cursor-pointer'>
-                      100$
-                  </div>
-                  <div className='col-span-1 bg-gray-500/50 font-bold text-white text-xl lg:text-4xl py-5 rounded-xl transition delay-[40] hover:bg-purple-500 cursor-pointer'>
-                      250$
-                  </div>
-                  <div className='col-span-1 bg-gray-500/50 font-bold text-white text-xl lg:text-4xl py-5 rounded-xl transition delay-[40] hover:bg-purple-500 cursor-pointer'>
-                      1000$
-                  </div>
-                </div>
-                <div className='w-full'>
-                  <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-500'>Buy Mong</button>
-                </div>
+              <div className='fadeup absolute bottom-0 transition delay-[40] w-full md:w-[450px] md:bottom-[50px] bg-white px-5 py-4 rounded-none lg:rounded-2xl flex flex-col items-center space-y-2 z-40'>
+               <iframe width="400" height="720" frameborder="0" allow="clipboard-read *; clipboard-write *; web-share *; accelerometer *; autoplay *; camera *; gyroscope *; payment *; geolocation *"
+               src="https://flooz.xyz/embed/trade?swapDisabled=false&swapToTokenAddress=0xf648F4646fd6CfE6b3107F47e130FF9bbda6152C&swapLockToToken=true&onRampDisabled=false&onRampAsDefault=false&onRampDefaultAmount=20&onRampTokenAddress=eth&onRampLockToken=true&stakeDisabled=true&network=eth&lightMode=true&primaryColor=%235e38f4&backgroundColor=transparent&roundedCorners=10&padding=22&refId=96VUv9" >
+               </iframe>
               </div>
             </div>
           );
