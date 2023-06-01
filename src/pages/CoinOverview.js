@@ -30,25 +30,22 @@ function CoinOverview(props) {
         ///Connect Wallet
         // This code will be executed only once, similar to componentDidMount
         //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)   
-        window.addEventListener('load', handleLoad); 
         getCoinData(id,1);
         fetchData();
         return () => {
           // This code will be executed just before unmounting the component, similar to componentWillUnmount
         };
     }, []); 
-    const handleLoad = async () => {
-      console.log("loaded!");
-      setIsLoading(false);
-    }
     //coingecko api function get coins market data
     const fetchData = async () => {
       const coinListresult = await axios.get(
           'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk'
       );
       setCoinLists(coinListresult.data);
+      setIsLoading(false);
     };
     const getCoinData = async (coinID, period) => {
+      setIsLoading(true);
       const result = await axios.get(
           `https://pro-api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=${period}&interval=hourly&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
       );
