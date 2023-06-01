@@ -21,19 +21,10 @@ class TwitterFeed extends React.Component {
   render() {    
     return (
         <div className=' w-full pt-4'>
-          
-          {(this.state.isPC)?(<TwitterTimelineEmbed
-                className="w-full hidden lg:block"
-                sourceType="profile"
-                screenName={this.state.coinDetail}
-                options={{height: 400}}
-            />):(<TwitterTimelineEmbed
-              className="w-full block lg:hidden"
+            <TwitterTimelineEmbed
               sourceType="profile"
               screenName={this.state.coinDetail}
-              options={{height: 400}}
-          />)}
-            
+              options={{height: 400}}/>
         </div>
     );
   }

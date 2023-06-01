@@ -130,7 +130,7 @@ function CoinOverview(props) {
                         <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>)}
                 </div>
-                <div className="pb-32 md:pb-0">
+                <div className="pb-32 md:pb-0 last:block last:lg:hidden">
                    <LineChart historicalData={historicalData}></LineChart>
                    <TwitterFeed isPc={false} coinDetail={coinDetail}></TwitterFeed>
                 </div>
@@ -138,7 +138,7 @@ function CoinOverview(props) {
                   {starContent}
                 </div>
               </div>
-              <div className='col-span-3 p-5 md:p-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-5 md:space-y-0'>
+              <div className='col-span-3 p-5 md:p-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-5 md:space-y-0 last:hidden last:lg:block'>
                 <div className='flex flex-row md:hidden space-x-2 w-full justify-center'>
                   {starContent}
                 </div>
