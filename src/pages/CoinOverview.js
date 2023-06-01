@@ -131,7 +131,10 @@ function CoinOverview(props) {
                     </div>)}
                 </div>
                 <div className="pb-32 md:pb-0 last:block last:lg:hidden">
-                   <LineChart historicalData={historicalData}></LineChart>
+                  <div className='w-full'>
+                    <LineChart historicalData={historicalData}></LineChart>
+                  </div>
+                   
                    <TwitterFeed isPc={false} coinDetail={coinDetail}></TwitterFeed>
                 </div>
                 <div className=' px-4  md:px-10 hidden md:flex md:flex-row space-x-2 w-full justify-center'>
