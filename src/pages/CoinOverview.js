@@ -140,15 +140,16 @@ function CoinOverview(props) {
                   {starContent}
                 </div>
               </div>
-              <div className='col-span-3 p-5 md:p-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-5 md:space-y-0 last:hidden last:lg:block'>
+              <div className='col-span-3 p-5 md:p-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-5 md:space-y-0'>
                 <div className='flex flex-row md:hidden space-x-2 w-full justify-center'>
                   {starContent}
                 </div>
                 <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{
                     setShowModalFlag(true);
                 }}>Buy Mong</button>
-                <TwitterFeed coinDetail={coinDetail} isPc={true}>
-                </TwitterFeed>
+                <div className='w-full pt-4 last:hidden last:lg:block'>
+                   <TwitterFeed isPc={false} coinDetail={coinDetail}></TwitterFeed>
+                   </div>
               </div>
           </div>);
 
