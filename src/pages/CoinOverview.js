@@ -7,7 +7,7 @@ import LineChart from '../component/LineChart';
 import { Circle2 } from 'react-preloaders';
 import {BsStarFill, BsStarHalf, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
 import {BounceLoader} from 'react-spinners'
-
+import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
 import TwitterFeed from '../component/TwitterFeed';
 
 function CoinOverview(props) {
@@ -22,29 +22,31 @@ function CoinOverview(props) {
     const [searchState, setSearchState] = useState(1);
     const [currentId, setCurrentId] = useState(-1);
     const [showModalFlag, setShowModalFlag] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [showAlertFlag, setShowAlertFlag] = useState(false);
     const [showAlertText, setShowAlertText] = useState("");
   
     useEffect(() => {
         ///Connect Wallet
         // This code will be executed only once, similar to componentDidMount
-        //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)    
+        //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)   
+        window.addEventListener('load', handleLoad); 
         getCoinData(id,1);
         fetchData();
         return () => {
           // This code will be executed just before unmounting the component, similar to componentWillUnmount
         };
     }, []); 
-
+    const handleLoad = async () => {
+      console.log("loaded!");
+      setIsLoading(false);
+    }
     //coingecko api function get coins market data
     const fetchData = async () => {
-      setIsLoading(true);
       const coinListresult = await axios.get(
           'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk'
       );
       setCoinLists(coinListresult.data);
-      setIsLoading(false);
     };
     const getCoinData = async (coinID, period) => {
       const result = await axios.get(
