@@ -45,7 +45,8 @@ function CoinOverview(props) {
 
     };
     const getCoinData = async (coinID, period) => {
-      setIsLoading(true);
+      if(currentId != coinID)
+        setIsLoading(true);
       const result = await axios.get(
           `https://pro-api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=${period}&interval=hourly&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
       );
@@ -154,10 +155,10 @@ function CoinOverview(props) {
           </div>);
 
           modalContent = (
-            <div className='fixed top-0 w-full h-full z-30 flex justify-center transition delay-[40]'>
+            <div className='fixed top-0 w-full h-full z-30 flex justify-center items-center transition delay-[40]'>
               <div className='w-full h-full bg-black/30 ' onClick={()=>{setShowModalFlag(false)}}></div>
-              <div className='fadeup absolute bottom-0 transition delay-[40] w-full md:w-[450px] md:bottom-[50px] bg-white px-5 py-4 rounded-none lg:rounded-2xl flex flex-col items-center space-y-2 z-40 last:w-full'>
-               <iframe height="720" frameborder="0" allow="clipboard-read *; clipboard-write *; web-share *; accelerometer *; autoplay *; camera *; gyroscope *; payment *; geolocation *"
+              <div className='fadeshow fixed transition delay-[40] w-full md:w-[450px] bg-white px-5 py-4 rounded-none lg:rounded-2xl flex flex-col items-center space-y-2 z-40'>
+               <iframe className="w-full" height="720" frameborder="0" allow="clipboard-read *; clipboard-write *; web-share *; accelerometer *; autoplay *; camera *; gyroscope *; payment *; geolocation *"
                src="https://flooz.xyz/embed/trade?swapDisabled=false&swapToTokenAddress=0xf648F4646fd6CfE6b3107F47e130FF9bbda6152C&swapLockToToken=true&onRampDisabled=false&onRampAsDefault=false&onRampDefaultAmount=20&onRampTokenAddress=eth&onRampLockToken=true&stakeDisabled=true&network=eth&lightMode=true&primaryColor=%235e38f4&backgroundColor=transparent&roundedCorners=10&padding=22&refId=96VUv9" >
                </iframe>
               </div>
