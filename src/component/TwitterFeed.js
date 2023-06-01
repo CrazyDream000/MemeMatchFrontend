@@ -7,7 +7,8 @@ class TwitterFeed extends React.Component {
     
     console.log(props.coinDetail);
     this.state = {
-        coinDetail:props.coinDetail
+        coinDetail:props.coinDetail,
+        isPC : props.isPC
     };
   }
   componentDidUpdate(prevProps) {
@@ -19,13 +20,20 @@ class TwitterFeed extends React.Component {
  }
   render() {    
     return (
-        <div>
-            <TwitterTimelineEmbed
-                className="w-full"
+        <div className=' w-full pt-4'>
+          
+          {(this.state.isPC)?(<TwitterTimelineEmbed
+                className="w-full hidden lg:block"
                 sourceType="profile"
                 screenName={this.state.coinDetail}
                 options={{height: 400}}
-            />
+            />):(<TwitterTimelineEmbed
+              className="w-full block lg:hidden"
+              sourceType="profile"
+              screenName={this.state.coinDetail}
+              options={{height: 400}}
+          />)}
+            
         </div>
     );
   }

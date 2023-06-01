@@ -42,7 +42,7 @@ function CoinOverview(props) {
           'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk'
       );
       setCoinLists(coinListresult.data);
-      setIsLoading(false);
+
     };
     const getCoinData = async (coinID, period) => {
       setIsLoading(true);
@@ -57,6 +57,7 @@ function CoinOverview(props) {
       setHistoricalData(result.data.prices);
       setCurrentId(coinID);
       setSearchState(period);
+      setIsLoading(false);
     };
 
     let captionContent=[];
@@ -131,7 +132,7 @@ function CoinOverview(props) {
                 </div>
                 <div className="pb-32 md:pb-0">
                    <LineChart historicalData={historicalData}></LineChart>
-                   <TwitterFeed  className='lg:hidden w-full mt-4 p-4' coinDetail={coinDetail}></TwitterFeed>
+                   <TwitterFeed isPc={false} coinDetail={coinDetail}></TwitterFeed>
                 </div>
                 <div className=' px-4  md:px-10 hidden md:flex md:flex-row space-x-2 w-full justify-center'>
                   {starContent}
@@ -144,7 +145,7 @@ function CoinOverview(props) {
                 <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{
                     setShowModalFlag(true);
                 }}>Buy Mong</button>
-                <TwitterFeed className='hidden lg:block w-full pt-4' coinDetail={coinDetail}>
+                <TwitterFeed coinDetail={coinDetail} isPc={true}>
                 </TwitterFeed>
               </div>
           </div>);
