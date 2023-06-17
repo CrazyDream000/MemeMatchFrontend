@@ -4,22 +4,27 @@ import React from "react";
 class ApexChart extends React.Component {
   constructor(props) {
     super(props);
+
+    let historicalData = [];
+    for(var i = 0; i < props.historicalData.c.length; i ++)
+    {
+      historicalData.push([props.historicalData.t[i] * 1000, props.historicalData.c[i]]);
+    }
+
     let bgColor;
-    if(props.historicalData[0][1] > props.historicalData[props.historicalData.length - 1][1])
+    if(historicalData[0][1] > historicalData[historicalData.length - 1][1])
       bgColor = '#DD0000'
     else
       bgColor = '#00DD00'
     this.state = {
       series: [
-        {
-          data: props.historicalData,
-        },
+        {data:historicalData}
       ],
       options: {
         annotations: {
           yaxis: [
             {
-              y: props.historicalData[props.historicalData.length - 1][1]>100?props.historicalData[props.historicalData.length - 1][1].toFixed(2):props.historicalData[props.historicalData.length - 1][1].toFixed(6),
+              y: historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(2):historicalData[historicalData.length - 1][1].toFixed(12),
               borderColor: bgColor,
               label: {
                 borderColor: bgColor,
@@ -27,7 +32,7 @@ class ApexChart extends React.Component {
                   color: '#fff',
                   background: bgColor
                 },
-                text: 'Current Price' + props.historicalData[0][1]>100?props.historicalData[0][1].toFixed(2):props.historicalData[0][1].toFixed(6)
+                text: 'Current Price' + historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(2):historicalData[historicalData.length - 1][1].toFixed(12)
               }
             }
           ]
@@ -108,7 +113,7 @@ class ApexChart extends React.Component {
                 if(val > 100)
                   return (val).toFixed(2) + "$";
                 else
-                  return (val).toFixed(6) + "$";
+                  return (val).toFixed(12) + "$";
               },
           },    
         },
@@ -143,7 +148,7 @@ class ApexChart extends React.Component {
                   if(val > 100)
                     return (val).toFixed(2) + "$";
                   else
-                    return (val).toFixed(6) + "$";
+                    return (val).toFixed(12) + "$";
                 },
               },    
             },
@@ -183,7 +188,7 @@ class ApexChart extends React.Component {
               if(val > 100)
                   return (val).toFixed(2) + "USD";
                 else
-                  return (val).toFixed(6) + "USD";
+                  return (val).toFixed(12) + "USD";
             },
           },
         },
@@ -192,17 +197,23 @@ class ApexChart extends React.Component {
   }
   componentDidUpdate(prevProps) {
     if(prevProps.historicalData !== this.props.historicalData) {
+      let historicalData = [];
+      for(var i = 0; i < this.props.historicalData.c.length; i ++)
+      {
+        historicalData.push([this.props.historicalData.t[i] * 1000, this.props.historicalData.c[i]]);
+      }
+
       let bgColor;
-      if(this.props.historicalData[0][1] > this.props.historicalData[this.props.historicalData.length - 1][1])
+      if(historicalData[0][1] > historicalData[historicalData.length - 1][1])
         bgColor = '#DD0000'
       else
         bgColor = '#00DD00'
-      this.setState({series: [{data:this.props.historicalData}]});
+      this.setState({series: [{data:historicalData}]});
       this.setState({options: {
         annotations: {
           yaxis: [
             {
-              y: this.props.historicalData[this.props.historicalData.length - 1][1]>100?this.props.historicalData[this.props.historicalData.length - 1][1].toFixed(2):this.props.historicalData[this.props.historicalData.length - 1][1].toFixed(6),
+              y: historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(2):historicalData[historicalData.length - 1][1].toFixed(12),
               borderColor: bgColor,
               label: {
                 borderColor: bgColor,
@@ -210,7 +221,7 @@ class ApexChart extends React.Component {
                   color: '#fff',
                   background: bgColor
                 },
-                text: 'Current Price' + this.props.historicalData[0][1]>100?this.props.historicalData[0][1].toFixed(2):this.props.historicalData[0][1].toFixed(6)
+                text: 'Current Price' + historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(2):historicalData[historicalData.length - 1][1].toFixed(12)
               }
             }
           ]
@@ -280,7 +291,7 @@ class ApexChart extends React.Component {
               if(val > 100)
                 return (val).toFixed(2) + "$";
               else
-                return (val).toFixed(6) + "$";
+                return (val).toFixed(12) + "$";
             },
           },    
         },
@@ -315,7 +326,7 @@ class ApexChart extends React.Component {
                   if(val > 100)
                     return (val).toFixed(2) + "$";
                   else
-                    return (val).toFixed(6) + "$";
+                    return (val).toFixed(12) + "$";
                 },
               },    
             },
@@ -331,7 +342,7 @@ class ApexChart extends React.Component {
               if(val > 100)
                   return (val).toFixed(2) + "USD";
                 else
-                  return (val).toFixed(6) + "USD";
+                  return (val).toFixed(12) + "USD";
             },
           },
         },

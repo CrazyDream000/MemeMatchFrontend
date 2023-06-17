@@ -1,81 +1,49 @@
-import React,  { useState,useEffect } from 'react'
-import axios from 'axios'
-import {Link} from 'react-router-dom'
-import {BsEye, BsSdCardFill} from 'react-icons/bs'
-import {BounceLoader} from 'react-spinners'
+import React,  { useState,useEffect,useRef} from 'react';
+import axios from 'axios';
+import {Link} from 'react-router-dom';
+import {BsEye, BsSdCardFill} from 'react-icons/bs';
+import {BounceLoader} from 'react-spinners';
+import { LazyLoadImage } from "react-lazy-load-image-component";
+
+import {db, storage} from '../firebase/firebase';
+import {getDocs, collection, getDoc,} from 'firebase/firestore';
+import { ref, getDownloadURL } from "firebase/storage";
+
+import { getTokenData } from '../firebase/tokenData';
+
+import back from "../assets/img/tokens/back1.png"
+import 'react-lazy-load-image-component/src/effects/blur.css';
 function CoinLists() {
-    const Background1 = require('../assets/img/tokens/back1.png');
+    
     const downPic = require('../assets/img/tokens/down.png');
     const heart = require('../assets/img/tokens/Vector.png');
     
-    const [isLoading, setIsLoading] = useState(false);
-    const [coinLists, setCoinLists] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [coinLists, setCoinLists] = useState(undefined);
     const [sortType, setSortType] = useState("market_cap");
     const [sortDown, setSortDown] = useState(true);
-    const [coinListContent, setCoinListContent] = useState([]);
+    
+    let coinlistsTable = [];
+
     useEffect(() => {
-        // This code will be executed only once, similar to componentDidMount
-        //this.interval = setInterval (() => this. fetchCurrencyData (), 60 *1000)
         fetchData(sortType, sortDown);
-        return () => {
-          // This code will be executed just before unmounting the component, similar to componentWillUnmount
-        };
-    }, []); 
-    useEffect(() => {
-        if(coinLists!=undefined)
-        {
-            console.log("sorting------------------");
-            console.log(sortType, sortDown);
-            let tmpcoinList  = coinLists;
-            for(var i = 0; i < tmpcoinList.length; i ++)
-            {
-                for(var j = i ; j < tmpcoinList.length; j ++)
-                {
-                    let tmp;
-                    var isSwap = false;
-                    if(sortType == 1)
-                    {
-                        if((sortDown && tmpcoinList[i].market_cap<tmpcoinList[j].market_cap) || (!sortDown && tmpcoinList[i].market_cap>tmpcoinList[j].market_cap))
-                           isSwap = true
-                    }
-                    else if(sortType == 2)
-                    {
-                        if((sortDown && tmpcoinList[i].market_cap>tmpcoinList[j].market_cap) || (!sortDown && tmpcoinList[i].market_cap<tmpcoinList[j].market_cap))
-                        isSwap = true
-                    }
-                    else if(sortType == 3)
-                    {
-                        if((sortDown && tmpcoinList[i].market_cap_rank>tmpcoinList[j].market_cap_rank) || (!sortDown && tmpcoinList[i].market_cap_rank<tmpcoinList[j].market_cap_rank))
-                        isSwap = true
-                    }
-                    if(isSwap)
-                    {
-                        tmp = tmpcoinList[i];
-                        tmpcoinList[i] = tmpcoinList[j];
-                        tmpcoinList[j] = tmp;
-                    }
-                }
-            }
-            console.log("tmpList--------")
-            console.log(tmpcoinList);
-            setCoinLists(tmpcoinList);
-        }
     }, [sortType, sortDown]);
+
     const fetchData = async (st, sd) => {
-        setIsLoading(true);
-        const result = await axios.get(
-            `https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=${st}&per_page=100&page=1&sparkline=false&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`,
-        );
-        console.log("coninlist--------------");
-        console.log(result.data);
-        if(sd)
-            setCoinLists(result.data);
-        else
-            setCoinLists(result.data.reverse());
+        try {
+            const querySnapshot = await getDocs(collection(db, "fl_content"));  
+            const newData = await Promise.all(
+                querySnapshot.docs.map((doc) => {
+                    return getTokenData(doc);
+                })
+            );
+            setCoinLists(newData);
+        } catch (error) {
+            console.error(error);
+        } 
         setIsLoading(false);
     };
-    let coinlistsTable = [];
-    
+ 
     function changeSortType(n){
         fetchData(n, sortDown)
         setSortType(n);
@@ -87,34 +55,34 @@ function CoinLists() {
     }
 
     if(coinLists != undefined)
-    {   
+    { 
         coinlistsTable = coinLists.map((item)=>(
-        <Link to={`/coinoverview/${item.id}`} className='col-span-1 relative cursor-pointer animeFadeShow'>
-            <div className='w-full relative'>
-                <div className='absolute w-full h-full  rounded-2xl transition deplay-[40] bg-black/30 opacity-0 hover:opacity-100 z-20 flex justify-center items-center'>
-                    <BsEye className="text-white w-10 h-10"></BsEye>
+            <Link to={`/coinoverview/${item.data.address}`} className='col-span-1 relative cursor-pointer animeFadeShow'>
+                <div className='w-full relative'>
+                    <div className='absolute w-full h-full  rounded-2xl transition deplay-[40] bg-black/30 opacity-0 hover:opacity-100 z-20 flex justify-center items-center'>
+                        <BsEye className="text-white w-10 h-10"></BsEye>
+                    </div>
+                    <LazyLoadImage className="rounded-2xl" placeholderSrc={back} src={item.background_url} effect="blur"/>
                 </div>
-                <img className="w-full" src={Background1}></img>
-            </div>
-            <div className='absolute left-0 top-5 w-[100%] px-2 md:px-8 flex flex-row justify-between'>
-                <img className='w-[25%] h-full' src={item.image}></img>
-                <div className='flex flex-col'>
-                    <div className='font-bold text-white text-3xl'>{(item.market_cap/1000000).toFixed(2) + "M"}</div>
-                    {item.market_cap_change_24h<0?
-                    (<div className='mt-4 px-3 py-2 w-20 bg-[#D8494A] text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
-                        <img src={downPic} className='w-2 h-2 rotate'></img>
-                        <div className='font-bold text-white text-sm'>{item.market_cap_change_percentage_24h.toFixed(2)+"%"}</div>
-                    </div>):
-                    (<div className='mt-4 px-3 py-2 w-20  bg-teal-500 text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
-                        <img src={downPic} className='w-2 h-2 rotate-180'></img>
-                        <div className='font-bold text-white text-sm'>{item.market_cap_change_percentage_24h.toFixed(2)+"%"}</div>
-                    </div>)}
+                <div className='absolute left-0 top-5 w-[100%] px-4 md:px-8 flex flex-row justify-between'>
+                    <img className='w-[25%] h-full' src={item.logo_url}></img>
+                    <div className='flex flex-col'>
+                        <div className='font-bold text-white text-3xl'>${item.data.liquidity_usd>1000000?((item.liquidity_usd/1000000).toFixed(0) + "M"):(item.data.liquidity_usd.toFixed(2))}</div>
+                        {item.price_24h_delta_usd<0?
+                        (<div className='mt-4 px-3 py-2 w-20 bg-[#D8494A] text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
+                            <img src={downPic} className='w-2 h-2 rotate'></img>
+                            <div className='font-bold text-white text-sm'>{item.data.price_24h_delta_usd.toFixed(2)+"%"}</div>
+                        </div>):
+                        (<div className='mt-4 px-3 py-2 w-20  bg-teal-500 text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
+                            <img src={downPic} className='w-2 h-2 rotate-180'></img>
+                            <div className='font-bold text-white text-sm'>{item.data.price_24h_delta_usd.toFixed(2)+"%"}</div>
+                        </div>)}
+                    </div>
                 </div>
-            </div>
-            <div className='absolute left-0 bottom-8 w-[100%] px-8 flex flex-row justify-start items-start'>
-                <div className='font-bold text-3xl text-white text-left'>{item.symbol.toUpperCase()}<br/>{item.name}</div>
-            </div>
-        </Link>
+                <div className='absolute left-0 bottom-8 w-[100%] px-4 md:px-8 flex flex-row justify-start items-start'>
+                    <div className='font-bold text-3xl text-white text-left'>{item.symbol.toUpperCase()}<br/>{item.name}</div>
+                </div>
+            </Link>
         ));
     }
     return (

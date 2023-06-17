@@ -1,8 +1,9 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 
+import { useEffect, useState} from 'react';
 function MainPage() {
-    return (
+   return (
       <div className=" bg-violet-700 h-[100vh] px-12 flex flex-col items-center justify-center space-y-10">
          <div className='text-7xl text-white font-bold'>
             MeMe Match

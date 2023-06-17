@@ -1,14 +1,18 @@
-import React, { useState,useEffect,Fragment, startTransition} from 'react';
+import React, { useState,useEffect} from 'react';
 import axios from 'axios'
-import {Link, useParams} from 'react-router-dom'
-import {Line} from 'react-chartjs-2';
-import ReactApexCharts from 'apexcharts'
+import {useParams} from 'react-router-dom'
 import LineChart from '../component/LineChart';
-import { Circle2 } from 'react-preloaders';
-import {BsStarFill, BsStarHalf, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
+import {BsStarFill, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
 import {BounceLoader} from 'react-spinners'
-import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
 import TwitterFeed from '../component/TwitterFeed';
+
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import {db, storage} from '../firebase/firebase';
+import {getDocs, collection, getDoc,} from 'firebase/firestore';
+import { ref, getDownloadURL } from "firebase/storage";
+
+import { getTokenData } from '../firebase/tokenData';
+
 
 function CoinOverview(props) {
     const { id } = useParams();
@@ -17,14 +21,11 @@ function CoinOverview(props) {
     const downPic = require('../assets/img/tokens/down.png');
     const [coinLists, setCoinLists] = useState(null);
     const [historicalData, setHistoricalData] = useState(null);
-    const [coinDetail, setCoinDetail] = useState(null);
 
     const [searchState, setSearchState] = useState(1);
     const [currentId, setCurrentId] = useState(-1);
     const [showModalFlag, setShowModalFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [showAlertFlag, setShowAlertFlag] = useState(false);
-    const [showAlertText, setShowAlertText] = useState("");
   
     useEffect(() => {
         ///Connect Wallet
@@ -36,26 +37,33 @@ function CoinOverview(props) {
           // This code will be executed just before unmounting the component, similar to componentWillUnmount
         };
     }, []); 
-    //coingecko api function get coins market data
-    const fetchData = async () => {
-      const coinListresult = await axios.get(
-          'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h&locale=en&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk'
-      );
-      setCoinLists(coinListresult.data);
 
+    const fetchData = async () => {
+      setIsLoading(true);
+      //get tokenlist data from firebase
+      try {
+        const querySnapshot = await getDocs(collection(db, "fl_content"));  
+        const newData = await Promise.all(
+            querySnapshot.docs.map((doc) => {
+                return getTokenData(doc);
+            })
+        );
+        console.log(newData);
+        setCoinLists(newData);
+      } catch (error) {
+          console.error(error);
+      }
+      setIsLoading(false); 
     };
+
     const getCoinData = async (coinID, period) => {
       if(currentId != coinID)
         setIsLoading(true);
-      const result = await axios.get(
-          `https://pro-api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=${period}&interval=hourly&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
-      );
-      const coinResult = await axios.get(
-        `https://pro-api.coingecko.com/api/v3/coins/${coinID}?localization=false&tickers=false&market_data=false&community_data=true&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-cYLMAXA7qqWnK5RXS8WAw5Jk`
-      );
-
-      setCoinDetail(coinResult.data.links.twitter_screen_name);
-      setHistoricalData(result.data.prices);
+      const toDate = (Date.now() / 1000).toFixed(0);
+      const fromDate = toDate - period * 86400;
+      const tokenTradingData = await axios.get(`https://api.dev.dex.guru/v1/tradingview/history?symbol=${coinID}-eth_USD&resolution=60&from=${fromDate}&to=${toDate}&currencyCode=USD&api-key=S5a8FMI9fWx7A9zOFFQV0_6qg7GcSg3ghAj_TWISkoc`);
+        
+        setHistoricalData(tokenTradingData.data);
       setCurrentId(coinID);
       setSearchState(period);
       setIsLoading(false);
@@ -65,35 +73,29 @@ function CoinOverview(props) {
     let chartContent = [];
     let modalContent = [];
 
-    if(coinLists)
+    if(coinLists != undefined)
     {
       for(var i = 0; i < coinLists.length; i ++)
       {
-        if(coinLists[i].id == currentId)
+        if(coinLists[i].data.address == currentId)
         {
-          const prevId = i>0?coinLists[i-1].id:coinLists[coinLists.length-1].id;
-          const nextId = i<(coinLists.length-1)?coinLists[i+1].id:coinLists[0].id;
+          const prevId = i>0?coinLists[i-1].data.address:coinLists[coinLists.length-1].data.address;
+          const nextId = i<(coinLists.length-1)?coinLists[i+1].data.address:coinLists[0].data.address;
           let starContent=[];
-          let val = coinLists[i].market_cap / coinLists[3].market_cap * 5;
           for(var j = 0 ; j < 5; j ++){
-            if(j<val)
               starContent = [...starContent, (
                 <BsStarFill className='text-purple-500'/>
-              )];
-            else
-              starContent = [...starContent, (
-                <BsStar/>
               )];
           }
           captionContent = (
             <div className='w-full h-[200px] sm:h-[300px] overflow-hidden relative flex justify-between items-center'>
-              <img className='absolute w-full -top-[100px] md:-top-[200px] lg:-top-[400px] xl:-top-[600px] z-0' src={Background1}></img>
+              <img className='absolute w-full z-0' src={coinLists[i].wallpaper_url}></img>
               <button className='ml-5 w-10 h-10 bg-white rounded-full transition delay-[40] hover:bg-gray-400 hover:text-white z-10 relative flex justify-center items-center' onClick={()=>{getCoinData(prevId,1)}}>
                   <BsArrowLeftShort className='w-8 h-8'/>
               </button>
               <div className='flex flex-col relative justify-center items-center space-y-3 sm:space-y-10'>
                   <div className='flex flex-col items-center'>
-                     <div className='bg-white rounded-full p-5'><img src={coinLists[i].image} className='w-10 sm:w-20 h-10 sm:h-20'></img></div>
+                     <div className='bg-white rounded-full p-5'><img src={coinLists[i].logo_url} className='w-10 sm:w-20 h-10 sm:h-20'></img></div>
                       <div className='text-2xl lg:text-5xl font-bold text-white'>{coinLists[i].symbol.toUpperCase()}</div>
                   </div>
                   <button className='w-10 h-10 text-black bg-white rounded-full flex justify-center items-center transition delay-[40] hover:bg-red-500 hover:text-white'><BsHeart/></button>
@@ -103,11 +105,11 @@ function CoinOverview(props) {
               </button>
             </div>
           );
-          let market_cap_change_rate = ((historicalData[historicalData.length-1][1] - historicalData[0][1])/historicalData[0][1] * 100);
+          let market_cap_change_rate = ((historicalData.c[historicalData.c.length] - historicalData.c[0])/historicalData.c[0] * 100);
           chartContent = (
-          <div className='w-full flex flex-col lg:grid lg:grid-cols-9'>
+          <div className='w-full flex flex-col lg:grid lg:grid-cols-9 px-0 md:px-4 lg:px-10'>
               <div className='col-span-6 py-4 h-[70vh] md:h-full'>
-                <div className='text-2xl px-4  md:px-10  lg:text-5xl text-center font-bold lg:text-left'>{"$" + coinLists[i].market_cap.toLocaleString()}</div>
+                <div className='text-2xl px-4  md:px-10  lg:text-5xl text-center font-bold lg:text-left'>{"$" + coinLists[i].data.liquidity_usd.toLocaleString()}</div>
                 <div className='flex px-4  md:px-10  py-4 md:space-x-10 font-bold justify-between md:justify-start'>
                   {searchState == 1?
                       (<button className='px-2 py-1 bg-purple-500 text-md md:text-lg text-white rounded-lg' onClick={()=>{getCoinData(currentId, 1)}}>Today</button>):
@@ -134,7 +136,7 @@ function CoinOverview(props) {
                 <div className="pb-32 md:pb-0">
                    <LineChart historicalData={historicalData}></LineChart>
                    <div className='w-full last:block last:lg:hidden'>
-                   <TwitterFeed isPc={false} coinDetail={coinDetail}></TwitterFeed>
+                   <TwitterFeed isPc={false} coinDetail={coinLists[i].symbol}></TwitterFeed>
                    </div>
                 </div>
                 <div className=' px-4  md:px-10 hidden md:flex md:flex-row space-x-2 w-full justify-center'>
@@ -149,7 +151,7 @@ function CoinOverview(props) {
                     setShowModalFlag(true);
                 }}>Buy Mong</button>
                 <div className='w-full pt-4 last:hidden last:lg:block'>
-                   <TwitterFeed isPc={false} coinDetail={coinDetail}></TwitterFeed>
+                   <TwitterFeed isPc={false} coinDetail={coinLists[i].symbol}></TwitterFeed>
                    </div>
               </div>
           </div>);
@@ -180,16 +182,7 @@ function CoinOverview(props) {
           {captionContent}
           {chartContent}
           {showModalFlag?modalContent:""}
-          {showAlertFlag?(
-            <div className='fixed top-0 w-full h-full z-30 flex justify-center transition delay-[40]'>
-              <div className='w-full h-full bg-black/30 ' onClick={()=>{setShowAlertFlag(false)}}></div>
-              <div className='fadeshow absolute top-[300px] transition delay-[40] w-[300px] lg:w-[600px] bg-violet-900 px-10 py-4 rounded-none lg:rounded-2xl flex flex-col space-y-4 z-40'>
-                <div className='font-bold text-2xl text-white'><span>ALERT</span></div>
-                <div className='text-xl text-white'>{showAlertText}</div>
-                <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg hover:bg-purple-500' onClick={()=>{setShowAlertFlag(false)}}>OK</button>
-              </div>
-            </div>
-            ):(<div></div>)}
+      
           </div>
         )}         
       </div>

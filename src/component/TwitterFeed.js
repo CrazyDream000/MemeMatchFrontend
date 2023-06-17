@@ -4,8 +4,6 @@ import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterH
 class TwitterFeed extends React.Component {
   constructor(props) {
     super(props);
-    
-    console.log(props.coinDetail);
     this.state = {
         coinDetail:props.coinDetail,
         isPC : props.isPC
@@ -14,8 +12,6 @@ class TwitterFeed extends React.Component {
   componentDidUpdate(prevProps) {
     if(prevProps.coinDetail !== this.props.coinDetail) {
         this.setState({coinDetail:this.props.coinDetail});
-        
-        console.log("updated",this.props.coinDetail);
     }
  }
   render() {    
@@ -24,7 +20,7 @@ class TwitterFeed extends React.Component {
             <TwitterTimelineEmbed
               sourceType="profile"
               screenName={this.state.coinDetail}
-              options={{height: 400}}/>
+              options={{height: 400, tweetLimit:10}}/>
         </div>
     );
   }
