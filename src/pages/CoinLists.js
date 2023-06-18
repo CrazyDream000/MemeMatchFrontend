@@ -5,11 +5,9 @@ import {BsEye, BsSdCardFill} from 'react-icons/bs';
 import {BounceLoader} from 'react-spinners';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-import {db, storage} from '../firebase/firebase';
+import {db, storage,getTokenData} from '../firebase/firebase';
 import {getDocs, collection, getDoc,} from 'firebase/firestore';
 import { ref, getDownloadURL } from "firebase/storage";
-
-import { getTokenData } from '../firebase/tokenData';
 
 import back from "../assets/img/tokens/back1.png"
 import 'react-lazy-load-image-component/src/effects/blur.css';

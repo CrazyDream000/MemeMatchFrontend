@@ -21,10 +21,13 @@ class ApexChart extends React.Component {
         {data:historicalData}
       ],
       options: {
+        stroke:{
+          width:1
+        },
         annotations: {
           yaxis: [
             {
-              y: historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(2):historicalData[historicalData.length - 1][1].toFixed(12),
+              y: historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(4):historicalData[historicalData.length - 1][1].toFixed(12),
               borderColor: bgColor,
               label: {
                 borderColor: bgColor,
@@ -32,7 +35,7 @@ class ApexChart extends React.Component {
                   color: '#fff',
                   background: bgColor
                 },
-                text: 'Current Price' + historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(2):historicalData[historicalData.length - 1][1].toFixed(12)
+                text: 'Current Price' + historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(4):historicalData[historicalData.length - 1][1].toFixed(12)
               }
             }
           ]
@@ -111,7 +114,7 @@ class ApexChart extends React.Component {
               maxWidth:50,
               formatter: function (val) {
                 if(val > 100)
-                  return (val).toFixed(2) + "$";
+                  return (val).toFixed(4) + "$";
                 else
                   return (val).toFixed(12) + "$";
               },
@@ -146,7 +149,7 @@ class ApexChart extends React.Component {
                 maxWidth:50,
                 formatter: function (val) {
                   if(val > 100)
-                    return (val).toFixed(2) + "$";
+                    return (val).toFixed(4) + "$";
                   else
                     return (val).toFixed(12) + "$";
                 },
@@ -186,7 +189,7 @@ class ApexChart extends React.Component {
             },
             formatter: function (val) {
               if(val > 100)
-                  return (val).toFixed(2) + "USD";
+                  return (val).toFixed(4) + "USD";
                 else
                   return (val).toFixed(12) + "USD";
             },
@@ -210,10 +213,13 @@ class ApexChart extends React.Component {
         bgColor = '#00DD00'
       this.setState({series: [{data:historicalData}]});
       this.setState({options: {
+        stroke:{
+          width:1
+        },
         annotations: {
           yaxis: [
             {
-              y: historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(2):historicalData[historicalData.length - 1][1].toFixed(12),
+              y: historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(4):historicalData[historicalData.length - 1][1].toFixed(12),
               borderColor: bgColor,
               label: {
                 borderColor: bgColor,
@@ -221,7 +227,7 @@ class ApexChart extends React.Component {
                   color: '#fff',
                   background: bgColor
                 },
-                text: 'Current Price' + historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(2):historicalData[historicalData.length - 1][1].toFixed(12)
+                text: 'Current Price' + historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(4):historicalData[historicalData.length - 1][1].toFixed(12)
               }
             }
           ]
@@ -289,7 +295,7 @@ class ApexChart extends React.Component {
             maxWidth:50,
             formatter: function (val) {
               if(val > 100)
-                return (val).toFixed(2) + "$";
+                return (val).toFixed(4) + "$";
               else
                 return (val).toFixed(12) + "$";
             },
@@ -324,7 +330,7 @@ class ApexChart extends React.Component {
                 maxWidth:50,
                 formatter: function (val) {
                   if(val > 100)
-                    return (val).toFixed(2) + "$";
+                    return (val).toFixed(4) + "$";
                   else
                     return (val).toFixed(12) + "$";
                 },
@@ -340,7 +346,7 @@ class ApexChart extends React.Component {
             },
             formatter: function (val) {
               if(val > 100)
-                  return (val).toFixed(2) + "USD";
+                  return (val).toFixed(4) + "USD";
                 else
                   return (val).toFixed(12) + "USD";
             },

@@ -5,13 +5,16 @@ import LineChart from '../component/LineChart';
 import {BsStarFill, BsStar, BsHeart, BsArrowLeftShort, BsArrowRightShort} from "react-icons/bs";
 import {BounceLoader} from 'react-spinners'
 import TwitterFeed from '../component/TwitterFeed';
+import {BsTelegram} from 'react-icons/bs'
+import {AiFillTwitterCircle} from 'react-icons/ai';
+import {FaTwitter, FaTelegramPlane} from 'react-icons/fa';
 
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import {db, storage} from '../firebase/firebase';
+import {db, storage,getTokenData} from '../firebase/firebase';
 import {getDocs, collection, getDoc,} from 'firebase/firestore';
 import { ref, getDownloadURL } from "firebase/storage";
 
-import { getTokenData } from '../firebase/tokenData';
+import back from "../assets/img/tokens/back2.png"
 
 
 function CoinOverview(props) {
@@ -39,7 +42,6 @@ function CoinOverview(props) {
     }, []); 
 
     const fetchData = async () => {
-      setIsLoading(true);
       //get tokenlist data from firebase
       try {
         const querySnapshot = await getDocs(collection(db, "fl_content"));  
@@ -53,7 +55,6 @@ function CoinOverview(props) {
       } catch (error) {
           console.error(error);
       }
-      setIsLoading(false); 
     };
 
     const getCoinData = async (coinID, period) => {
@@ -90,6 +91,7 @@ function CoinOverview(props) {
           captionContent = (
             <div className='w-full h-[200px] sm:h-[300px] overflow-hidden relative flex justify-between items-center'>
               <img className='absolute w-full z-0' src={coinLists[i].wallpaper_url}></img>
+              {/* <LazyLoadImage className="absolute w-full z-0" placeholderSrc={back} src={coinLists[i].wallpaper_url} effect="blur"/> */}
               <button className='ml-5 w-10 h-10 bg-white rounded-full transition delay-[40] hover:bg-gray-400 hover:text-white z-10 relative flex justify-center items-center' onClick={()=>{getCoinData(prevId,1)}}>
                   <BsArrowLeftShort className='w-8 h-8'/>
               </button>
@@ -105,11 +107,25 @@ function CoinOverview(props) {
               </button>
             </div>
           );
-          let market_cap_change_rate = ((historicalData.c[historicalData.c.length] - historicalData.c[0])/historicalData.c[0] * 100);
+          let market_cap_change_rate = ((historicalData.c[historicalData.c.length - 1] - historicalData.c[0])/historicalData.c[0] * 100);
           chartContent = (
           <div className='w-full flex flex-col lg:grid lg:grid-cols-9 px-0 md:px-4 lg:px-10'>
               <div className='col-span-6 py-4 h-[70vh] md:h-full'>
-                <div className='text-2xl px-4  md:px-10  lg:text-5xl text-center font-bold lg:text-left'>{"$" + coinLists[i].data.liquidity_usd.toLocaleString()}</div>
+                  <div className='text-2xl px-4  md:px-10  lg:text-5xl text-center font-bold flex justify-between'>
+                    <div>{"$" + coinLists[i].data.liquidity_usd.toLocaleString()}</div>
+                    <div className='flex space-x-2 items-center'>
+                      <a href={coinLists[i].telegramUrl}>
+                      <div className='bg-blue-500 rounded-[50%] p-2'>
+                          <FaTelegramPlane className='text-white md:text-xl text-xs' />
+                        </div>
+                      </a>
+                      <a href={coinLists[i].twitterUrl} className='flex'>
+                        <div className='bg-blue-500 rounded-[50%] p-2'>
+                          <FaTwitter className='text-white md:text-xl text-xs' />
+                        </div>
+                      </a>
+                    </div>
+                  </div>
                 <div className='flex px-4  md:px-10  py-4 md:space-x-10 font-bold justify-between md:justify-start'>
                   {searchState == 1?
                       (<button className='px-2 py-1 bg-purple-500 text-md md:text-lg text-white rounded-lg' onClick={()=>{getCoinData(currentId, 1)}}>Today</button>):
