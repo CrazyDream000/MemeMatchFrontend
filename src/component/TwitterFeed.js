@@ -34,7 +34,7 @@ class TwitterFeed extends React.Component {
               ):(
                 <div className='p-2'>
                   <div className='w-full rounded-t-xl bg-white border-[1px] border-b-0 border-b-gray-400 flex flex-col justify-cente items-start font-bold text-xl px-4 py-2'>Twitter Feed</div>
-                  <div className='h-40 md:h-80 w-full rounded-b-xl bg-white border-[1px] border-b-gray-400 flex flex-col justify-center items-center'><BounceLoader color="#36d7b7"/> Loading</div>
+                  <div className='h-40 md:h-80 w-full rounded-b-xl bg-white border-[1px] border-b-gray-400 flex flex-col justify-center items-center'><BounceLoader color="#6D28D9"/> Loading</div>
                 </div>
               )}
         </div>

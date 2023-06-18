@@ -36,7 +36,6 @@ export async function getTokenData (doc) {
       getDownloadURL(ref(storage, 'flamelink/media/' + tokenBackground.data().file))
   ]);
   const tokenDatainfo = await axios.get(`https://api.dev.dex.guru/v1/chain/1/tokens/${tokenInfo.contractAddress}/market?api-key=S5a8FMI9fWx7A9zOFFQV0_6qg7GcSg3ghAj_TWISkoc`);
-  
   return {
       name: tokenInfo.tokenName,
       symbol: tokenInfo.ticker,

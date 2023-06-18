@@ -27,7 +27,7 @@ class ApexChart extends React.Component {
         annotations: {
           yaxis: [
             {
-              y: historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(4):historicalData[historicalData.length - 1][1].toFixed(12),
+              y: historicalData[historicalData.length - 1][1].toFixed(props.decimalCnt),
               borderColor: bgColor,
               label: {
                 borderColor: bgColor,
@@ -35,7 +35,7 @@ class ApexChart extends React.Component {
                   color: '#fff',
                   background: bgColor
                 },
-                text: 'Current Price' + historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(4):historicalData[historicalData.length - 1][1].toFixed(12)
+                text: 'Current Price' + historicalData[historicalData.length - 1][1].toFixed(props.decimalCnt)
               }
             }
           ]
@@ -113,10 +113,7 @@ class ApexChart extends React.Component {
               minWidth:0,
               maxWidth:50,
               formatter: function (val) {
-                if(val > 100)
-                  return (val).toFixed(4) + "$";
-                else
-                  return (val).toFixed(12) + "$";
+                  return (val).toFixed(props.decimalCnt) + "$";
               },
           },    
         },
@@ -148,10 +145,7 @@ class ApexChart extends React.Component {
                 minWidth:0,
                 maxWidth:50,
                 formatter: function (val) {
-                  if(val > 100)
-                    return (val).toFixed(4) + "$";
-                  else
-                    return (val).toFixed(12) + "$";
+                    return (val).toFixed(props.decimalCnt) + "$";
                 },
               },    
             },
@@ -188,10 +182,7 @@ class ApexChart extends React.Component {
               formatter: (seriesName) => "Price",
             },
             formatter: function (val) {
-              if(val > 100)
-                  return (val).toFixed(4) + "USD";
-                else
-                  return (val).toFixed(12) + "USD";
+                return (val).toFixed(props.decimalCnt) + "USD";
             },
           },
         },
@@ -200,6 +191,7 @@ class ApexChart extends React.Component {
   }
   componentDidUpdate(prevProps) {
     if(prevProps.historicalData !== this.props.historicalData) {
+      const decimalCnt = this.props.decimalCnt;
       let historicalData = [];
       for(var i = 0; i < this.props.historicalData.c.length; i ++)
       {
@@ -219,7 +211,7 @@ class ApexChart extends React.Component {
         annotations: {
           yaxis: [
             {
-              y: historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(4):historicalData[historicalData.length - 1][1].toFixed(12),
+              y: historicalData[historicalData.length - 1][1].toFixed(decimalCnt),
               borderColor: bgColor,
               label: {
                 borderColor: bgColor,
@@ -227,7 +219,7 @@ class ApexChart extends React.Component {
                   color: '#fff',
                   background: bgColor
                 },
-                text: 'Current Price' + historicalData[historicalData.length - 1][1]>100?historicalData[historicalData.length - 1][1].toFixed(4):historicalData[historicalData.length - 1][1].toFixed(12)
+                text: 'Current Price' + historicalData[historicalData.length - 1][1].toFixed(decimalCnt)
               }
             }
           ]
@@ -294,10 +286,7 @@ class ApexChart extends React.Component {
             minWidth:0,
             maxWidth:50,
             formatter: function (val) {
-              if(val > 100)
-                return (val).toFixed(4) + "$";
-              else
-                return (val).toFixed(12) + "$";
+                return val.toFixed(decimalCnt) + "$";
             },
           },    
         },
@@ -329,10 +318,7 @@ class ApexChart extends React.Component {
                 minWidth:0,
                 maxWidth:50,
                 formatter: function (val) {
-                  if(val > 100)
-                    return (val).toFixed(4) + "$";
-                  else
-                    return (val).toFixed(12) + "$";
+                    return (val).toFixed(decimalCnt) + "$";
                 },
               },    
             },
@@ -345,10 +331,7 @@ class ApexChart extends React.Component {
               formatter: (seriesName) => "Price",
             },
             formatter: function (val) {
-              if(val > 100)
-                  return (val).toFixed(4) + "USD";
-                else
-                  return (val).toFixed(12) + "USD";
+              return (val).toFixed(decimalCnt) + "USD";
             },
           },
         },

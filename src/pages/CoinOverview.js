@@ -63,7 +63,7 @@ function CoinOverview(props) {
       const fromDate = toDate - period * 86400;
       const tokenTradingData = await axios.get(`https://api.dev.dex.guru/v1/tradingview/history?symbol=${coinID}-eth_USD&resolution=60&from=${fromDate}&to=${toDate}&currencyCode=USD&api-key=S5a8FMI9fWx7A9zOFFQV0_6qg7GcSg3ghAj_TWISkoc`);
         
-        setHistoricalData(tokenTradingData.data);
+      setHistoricalData(tokenTradingData.data);
       setCurrentId(coinID);
       setSearchState(period);
       setIsLoading(false);
@@ -110,6 +110,13 @@ function CoinOverview(props) {
           );
           const twitterUrl = coinLists[i].twitterUrl.split('/');
           let market_cap_change_rate = ((historicalData.c[historicalData.c.length - 1] - historicalData.c[0])/historicalData.c[0] * 100);
+          let decimalCnt = 0;
+          let tmp = coinLists[i].data.token_supply / coinLists[i].data.liquidity_usd;
+          while(tmp >= 1){
+            tmp /= 10;
+            decimalCnt ++;
+          }
+          decimalCnt += 2;
           chartContent = (
           <div className='w-full flex flex-col lg:grid lg:grid-cols-9 px-0 md:px-4 lg:px-10'>
               <div className='col-span-6 py-4 h-[70vh] md:h-full'>
@@ -152,7 +159,7 @@ function CoinOverview(props) {
                     </div>)}
                 </div>
                 <div className="pb-32 md:pb-0">
-                   <LineChart historicalData={historicalData}></LineChart>
+                   <LineChart historicalData={historicalData} decimalCnt={decimalCnt}></LineChart>
                    <div className='w-full last:block last:lg:hidden'>
                    <TwitterFeed isPc={false} coinDetail={twitterUrl[twitterUrl.length - 1]}></TwitterFeed>
                    </div>
@@ -190,7 +197,7 @@ function CoinOverview(props) {
     return (
     
       <div className="relative">
-        {isLoading?(<div className='w-full h-[100vh] flex justify-center items-center'><BounceLoader className='self-center' color="#36d7b7"/></div>):(
+        {isLoading?(<div className='w-full h-[100vh] flex justify-center items-center'><BounceLoader className='self-center' color="#6D28D9"/></div>):(
           <div>
           <div className='p-6 bg-violet-700 lg:flex lg:flex-col justify-center items-center gap-4 relative'>
             <div className='text-2xl text-white font-bold flex gap-2 items-end'>
