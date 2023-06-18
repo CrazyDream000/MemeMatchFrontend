@@ -89,10 +89,10 @@ function CoinOverview(props) {
           }
           captionContent = (
             <div className='w-full h-[170px] sm:h-[300px] overflow-hidden relative flex justify-between items-center'>
-              <img className='absolute w-full h-full z-0' src={coinLists[i].wallpaper_url}></img>
-              {/* <div className='absolute w-full z-0'>
+              {/* <img className='absolute w-full h-full z-0' src={coinLists[i].wallpaper_url}></img> */}
+              <div className='absolute w-full z-0 token-background'>
                 <LazyLoadImage placeholderSrc={back} src={coinLists[i].wallpaper_url} effect="blur"/>
-              </div> */}
+              </div>
               <button className='ml-5 w-10 h-10 bg-white rounded-full transition delay-[40] hover:bg-gray-400 hover:text-white z-10 relative flex justify-center items-center' onClick={()=>{getCoinData(prevId,1)}}>
                   <BsArrowLeftShort className='w-8 h-8'/>
               </button>

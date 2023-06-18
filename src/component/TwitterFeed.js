@@ -25,18 +25,17 @@ class TwitterFeed extends React.Component {
   render() {    
     return (
         <div className=' w-full pt-4'>
-            {this.state.isLoad!=true?(
-              <TwitterTimelineEmbed
-                sourceType="profile"
-                screenName={this.state.coinDetail}
-                options={{height: 400, tweetLimit:10}}
-                onLoad={this.loaded}/>
-              ):(
-                <div className='p-2'>
-                  <div className='w-full rounded-t-xl bg-white border-[1px] border-b-0 border-b-gray-400 flex flex-col justify-cente items-start font-bold text-xl px-4 py-2'>Twitter Feed</div>
-                  <div className='h-40 md:h-80 w-full rounded-b-xl bg-white border-[1px] border-b-gray-400 flex flex-col justify-center items-center'><BounceLoader color="#6D28D9"/> Loading</div>
-                </div>
-              )}
+          <TwitterTimelineEmbed  className={this.state.isLoad!=true?"block":"hidden"}
+            sourceType="profile"
+            screenName={this.state.coinDetail}
+            options={{height: 400, tweetLimit:10}}
+            onLoad={this.loaded}/>
+          <div className={this.state.isLoad!=true?"hidden":"block"}>
+            <div className='p-2'>
+              <div className='w-full rounded-t-xl bg-white border-[1px] border-b-0 border-b-gray-400 flex flex-col justify-cente items-start font-bold text-xl px-4 py-2'>Twitter Feed</div>
+              <div className='h-40 md:h-80 w-full rounded-b-xl bg-white border-[1px] border-b-gray-400 flex flex-col justify-center items-center'><BounceLoader color="#6D28D9"/> Loading</div>
+            </div>
+          </div>
         </div>
     );
   }

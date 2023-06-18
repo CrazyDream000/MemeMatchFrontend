@@ -179,3 +179,11 @@ option {
   from {scale:0;}
   to {scale:1;}
 }
+
+.token-background>span{
+  width:100%;
+}
+
+.token-background>span>img{
+  width:100%;
+}
