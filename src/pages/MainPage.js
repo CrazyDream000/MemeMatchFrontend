@@ -11,7 +11,7 @@ function MainPage() {
          <div className='text-lg text-white'>
             This is the best place to find and invest in established meme tokens to follow or invest in.
          </div>
-         <div className=' text-white text-lg p-5 w-60 flex-col flex space-y-4'>
+         <div className=' text-white text-lg p-5 w-64 flex-col flex space-y-4'>
             <div className='flex items-center space-x-4'> <div className='w-4 h-4 bg-white rounded-full'></div><span className=''>Active communities</span></div>
             <div className='flex items-center space-x-4'> <div className='w-4 h-4 bg-white rounded-full'></div><span className=''>Locked liquidity</span></div>
             <div className='flex items-center space-x-4'> <div className='w-4 h-4 bg-white rounded-full'></div><span className=''>Contracts renounced</span></div>

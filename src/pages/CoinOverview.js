@@ -50,7 +50,6 @@ function CoinOverview(props) {
                 return getTokenData(doc);
             })
         );
-        console.log(newData);
         setCoinLists(newData);
       } catch (error) {
           console.error(error);
@@ -89,9 +88,11 @@ function CoinOverview(props) {
               )];
           }
           captionContent = (
-            <div className='w-full h-[200px] sm:h-[300px] overflow-hidden relative flex justify-between items-center'>
-              <img className='absolute w-full z-0' src={coinLists[i].wallpaper_url}></img>
-              {/* <LazyLoadImage className="absolute w-full z-0" placeholderSrc={back} src={coinLists[i].wallpaper_url} effect="blur"/> */}
+            <div className='w-full h-[170px] sm:h-[300px] overflow-hidden relative flex justify-between items-center'>
+              <img className='absolute w-full h-full z-0' src={coinLists[i].wallpaper_url}></img>
+              {/* <div className='absolute w-full z-0'>
+                <LazyLoadImage placeholderSrc={back} src={coinLists[i].wallpaper_url} effect="blur"/>
+              </div> */}
               <button className='ml-5 w-10 h-10 bg-white rounded-full transition delay-[40] hover:bg-gray-400 hover:text-white z-10 relative flex justify-center items-center' onClick={()=>{getCoinData(prevId,1)}}>
                   <BsArrowLeftShort className='w-8 h-8'/>
               </button>
@@ -107,6 +108,7 @@ function CoinOverview(props) {
               </button>
             </div>
           );
+          const twitterUrl = coinLists[i].twitterUrl.split('/');
           let market_cap_change_rate = ((historicalData.c[historicalData.c.length - 1] - historicalData.c[0])/historicalData.c[0] * 100);
           chartContent = (
           <div className='w-full flex flex-col lg:grid lg:grid-cols-9 px-0 md:px-4 lg:px-10'>
@@ -140,11 +142,11 @@ function CoinOverview(props) {
                       (<button className='px-2 py-1 text-gray-500 text-md md:text-lg transition delay-[40] hover:bg-purple/100 hover:text-white rounded-lg' onClick={()=>{getCoinData(currentId, 14)}}>14 days</button>)
                   }
                   {market_cap_change_rate<0?
-                    (<div className='ml-2 px-3 py-2 w-20 bg-[#D8494A] text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
+                    (<div className='ml-2 px-3 py-2 bg-[#D8494A] text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
                         <img src={downPic} className='w-2 h-2 rotate'></img>
                         <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>):
-                    (<div className='ml-2 px-3 py-2 w-20  bg-teal-500 text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
+                    (<div className='ml-2 px-3 py-2  bg-teal-500 text-white text-sm rounded-xl flex items-center space-x-1 self-end'>
                         <img src={downPic} className='w-2 h-2 rotate-180'></img>
                         <div className='font-bold text-white text-sm'>{market_cap_change_rate.toFixed(2)+"%"}</div>
                     </div>)}
@@ -152,22 +154,22 @@ function CoinOverview(props) {
                 <div className="pb-32 md:pb-0">
                    <LineChart historicalData={historicalData}></LineChart>
                    <div className='w-full last:block last:lg:hidden'>
-                   <TwitterFeed isPc={false} coinDetail={coinLists[i].symbol}></TwitterFeed>
+                   <TwitterFeed isPc={false} coinDetail={twitterUrl[twitterUrl.length - 1]}></TwitterFeed>
                    </div>
                 </div>
                 <div className=' px-4  md:px-10 hidden md:flex md:flex-row space-x-2 w-full justify-center'>
                   {starContent}
                 </div>
               </div>
-              <div className='col-span-3 p-5 md:p-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-5 md:space-y-0'>
+              <div className='col-span-3 pt-5 px-5 md:px-10 bg-white fixed bottom-0 w-full md:relative flex flex-col space-y-2 md:space-y-0'>
                 <div className='flex flex-row md:hidden space-x-2 w-full justify-center'>
                   {starContent}
                 </div>
-                <button className='px-5 py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{
+                <div className='px-2'><button className='py-2 bg-purple-600 text-white text-lg rounded-lg w-full hover:bg-purple-800' onClick={()=>{
                     setShowModalFlag(true);
-                }}>Buy Mong</button>
-                <div className='w-full pt-4 last:hidden last:lg:block'>
-                   <TwitterFeed isPc={false} coinDetail={coinLists[i].symbol}></TwitterFeed>
+                }}>Buy Mong</button></div>
+                <div className='w-full last:hidden last:lg:block'>
+                   <TwitterFeed isPc={false} coinDetail={coinLists[i].name}></TwitterFeed>
                    </div>
               </div>
           </div>);
